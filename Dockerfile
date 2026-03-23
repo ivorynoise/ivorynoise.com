@@ -1,34 +1,36 @@
 # syntax=docker/dockerfile:1.4
 ARG TARGETPLATFORM=linux/amd64
 FROM --platform=$TARGETPLATFORM node:24-alpine AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@8.15.5 --activate
 RUN apk update && apk add --no-cache libc6-compat
 
+# ---
 FROM base AS deps
 WORKDIR /app
-COPY package.json ./
-RUN npm install 
 
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# ---
 FROM base AS builder
 WORKDIR /app
-COPY . .
+
 COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
 RUN npm run build
 
+# ---
 FROM base AS runner
-
 WORKDIR /app
-RUN addgroup --system --gid 1001 nodejs \
-	&& adduser --system --uid 1001 nextjs \
-	&& mkdir -p /app/.next/cache \
-	&& chown -R nextjs:nodejs /app/.next
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 USER nextjs
-# Copy Next.js standalone output
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 EXPOSE 3000
 ENV PORT=3000
