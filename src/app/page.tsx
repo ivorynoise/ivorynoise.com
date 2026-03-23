@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Server, Database, Users, Rocket } from "lucide-react";
 
+import deepakPhoto from "../../public/images/deepak.jpg";
+
 const expertise = [
   {
     Icon: Server,
@@ -75,7 +77,7 @@ export default function AboutPage() {
               style={{ borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-lg)" }}
             >
               <Image
-                src="/images/deepak.jpg"
+                src={deepakPhoto}
                 alt="Deepak Aggarwal"
                 width={420}
                 height={520}
