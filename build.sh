@@ -5,7 +5,8 @@ REGISTRY="central-harbor.ext.synthlane.com/internal"
 IMAGE_NAME="ivorynoise-com"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# Dockerfile lives next to this script; do not use parent paths (breaks CI checkout root).
+REPO_ROOT="$SCRIPT_DIR"
 cd "$REPO_ROOT"
 
 
