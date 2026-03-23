@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ivory Noise
+
+A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder & CTO, Synthlane Technologies). Built with Next.js 16 App Router, TypeScript, and Tailwind CSS.
+
+## Features
+
+- **About & Bio:** Custom landing page with profile, philosophy, and core expertise.
+- **Blog System:** File-based Markdown blog (`content/blogs/*.md`) with featured posts, archive, and custom table support.
+- **Newsletter:** Integrated Mailchimp-powered newsletter signup.
+- **Minimal, Editorial UI:** Custom color palette, Playfair Display & Source Sans 3 fonts, and subtle animations.
+- **No CMS:** All content is local, no Sanity or external CMS dependencies.
+- **Fully Responsive:** Mobile-first, accessible, and fast.
+
+## Tech Stack
+
+- [Next.js 16 (App Router)](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [gray-matter](https://github.com/jonschlinkert/gray-matter) (Markdown parsing)
+- [react-markdown](https://github.com/remarkjs/react-markdown) + [remark-gfm](https://github.com/remarkjs/remark-gfm)
+- [lucide-react](https://lucide.dev/) (icons)
+- [Mailchimp API](https://mailchimp.com/developer/marketing/api/) (newsletter)
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Set up environment variables:**
+   Create a `.env.local` file in the root:
+   ```
+   MAILCHIMP_API_KEY=your-mailchimp-api-key
+   MAILCHIMP_LIST_ID=your-mailchimp-list-id
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Content & Customization
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Blog posts:** Add Markdown files to `content/blogs/`. Each file uses frontmatter for metadata.
+- **Profile image:** Place your image at `public/images/deepak.jpg`.
+- **Favicon:** Place your SVG favicon as `src/app/icon.svg`.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
