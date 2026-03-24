@@ -1,5 +1,8 @@
+"use client";
+
 import { Github, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import type { ComponentType } from "react";
+import posthog from "posthog-js";
 
 type SocialLink = {
   href: string;
@@ -33,7 +36,14 @@ export function SocialLinks({ compact = false, onDark = false }: Props) {
   return (
     <div className="flex flex-wrap gap-2" style={{ fontSize: "var(--text-sm)" }}>
       {links.map(({ href, label, icon: Icon }) => (
-        <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={pill}>
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={pill}
+          onClick={() => posthog.capture("social_link_clicked", { platform: label, href })}
+        >
           <Icon className="h-4 w-4 shrink-0" />
           <span>{label}</span>
         </a>

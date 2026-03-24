@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY!;
 const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID!;
@@ -29,6 +30,12 @@ export async function POST(req: NextRequest) {
     );
 
     if (response.status === 200 || response.status === 201) {
+      const posthog = getPostHogClient();
+      posthog?.capture({
+        distinctId: email,
+        event: "newsletter_subscribed",
+        properties: { email },
+      });
       return NextResponse.json({ success: true });
     } else {
       const error = await response.json();

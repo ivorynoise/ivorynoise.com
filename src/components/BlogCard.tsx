@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
+import posthog from "posthog-js";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -12,7 +15,10 @@ function formatDate(dateStr: string) {
 export function FeatureCard({ post }: { post: PostMeta }) {
   return (
     <article className="group transition-transform duration-300 hover:-translate-y-1">
-      <Link href={`/blog/${post.slug}`}>
+      <Link
+        href={`/blog/${post.slug}`}
+        onClick={() => posthog.capture("blog_post_clicked", { slug: post.slug, title: post.title, card_type: "featured" })}
+      >
         <div
           className="w-full mb-4 overflow-hidden"
           style={{ borderRadius: "var(--radius-md)", aspectRatio: "16/10", background: "var(--color-sand)", boxShadow: "var(--shadow-sm)" }}
@@ -75,7 +81,10 @@ export function ArchiveRow({ post }: { post: PostMeta }) {
       </time>
 
       <div>
-        <Link href={`/blog/${post.slug}`}>
+        <Link
+          href={`/blog/${post.slug}`}
+          onClick={() => posthog.capture("blog_post_clicked", { slug: post.slug, title: post.title, card_type: "archive" })}
+        >
           <h3
             className="text-nocturne font-semibold leading-tight transition-colors group-hover:text-forest"
             style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}

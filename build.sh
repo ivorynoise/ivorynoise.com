@@ -8,9 +8,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$SCRIPT_DIR"
 cd "$REPO_ROOT"
 
+: "${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:?NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN is not set (PostHog project API key)}"
+POSTHOG_HOST="${NEXT_PUBLIC_POSTHOG_HOST:-https://us.i.posthog.com}"
+
 echo "Building Docker image..."
 
 docker build \
+  --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="$NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN" \
+  --build-arg NEXT_PUBLIC_POSTHOG_HOST="$POSTHOG_HOST" \
   -f Dockerfile \
   -t "$REGISTRY/$IMAGE_NAME:latest" .
 

@@ -13,6 +13,26 @@
   --color-forest:   #566247;
   --color-mauve:    #8b7080;
 
+  /* shadcn/ui — semantic tokens (Ivory palette) */
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-nocturne);
+  --color-card: var(--color-cream);
+  --color-card-foreground: var(--color-nocturne);
+  --color-popover: var(--color-cream);
+  --color-popover-foreground: var(--color-nocturne);
+  --color-primary: var(--color-nocturne);
+  --color-primary-foreground: var(--color-cream);
+  --color-secondary: var(--color-sand);
+  --color-secondary-foreground: var(--color-nocturne);
+  --color-muted: var(--color-sand);
+  --color-muted-foreground: var(--color-slate);
+  --color-accent: var(--color-sand);
+  --color-accent-foreground: var(--color-nocturne);
+  --color-destructive: oklch(0.55 0.2 25);
+  --color-border: oklch(0.35 0.02 90 / 0.22);
+  --color-input: oklch(0.35 0.02 90 / 0.22);
+  --color-ring: var(--color-forest);
+
   /* ── Font families (override Tailwind defaults, pull from next/font vars) ── */
   --font-serif: var(--font-title), "Playfair Display", Georgia, "Times New Roman", serif;
   --font-sans:  var(--font-body),  "Source Sans 3", "Inter", system-ui, sans-serif;

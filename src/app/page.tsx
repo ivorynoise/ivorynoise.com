@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Server, Database, Users, Rocket } from "lucide-react";
+import { TrackedLink } from "@/components/TrackedLink";
 
 import deepakPhoto from "../../public/images/deepak.jpg";
 
@@ -54,20 +55,24 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-8 flex gap-4">
-              <a
+              <TrackedLink
                 href="/blog"
+                event="cta_clicked"
+                properties={{ label: "Read my writing", location: "hero" }}
                 className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] px-5 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-85"
                 style={{ background: "var(--color-nocturne)" }}
               >
                 Read my writing
-              </a>
-              <a
+              </TrackedLink>
+              <TrackedLink
                 href="mailto:deepak@synthlane.com"
+                event="cta_clicked"
+                properties={{ label: "Say hello", location: "hero" }}
                 className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] px-5 py-2.5 text-sm font-semibold text-nocturne/70 transition-colors hover:text-nocturne"
                 style={{ border: "var(--border)" }}
               >
                 Say hello
-              </a>
+              </TrackedLink>
             </div>
           </div>
 
@@ -244,13 +249,15 @@ export default function AboutPage() {
               Building something interesting? Let&apos;s talk.
             </p>
           </div>
-          <a
+          <TrackedLink
             href="mailto:deepak@synthlane.com"
+            event="cta_clicked"
+            properties={{ label: "Get in touch", location: "contact_banner" }}
             className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] text-nocturne font-semibold px-6 py-3 text-sm transition-opacity hover:opacity-85 shrink-0"
             style={{ background: "var(--color-cream)" }}
           >
             Get in touch
-          </a>
+          </TrackedLink>
         </div>
       </section>
     </>

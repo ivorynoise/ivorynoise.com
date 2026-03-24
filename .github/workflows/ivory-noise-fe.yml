@@ -40,4 +40,6 @@ jobs:
           password: ${{ secrets.INFISICAL_HARBOR_PASSWORD }}
 
       - name: Build and Push Docker Image
+        env:
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ secrets.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN }}
         run: ./build.sh ${{ inputs.version }}

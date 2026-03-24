@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -11,19 +15,28 @@ export function NewsletterForm() {
     e.preventDefault();
     setStatus("loading");
     setMessage("");
-    const res = await fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      setStatus("success");
-      setMessage("You're subscribed!");
-      setEmail("");
-    } else {
+    posthog.capture("newsletter_submitted");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStatus("success");
+        setMessage("You're subscribed!");
+        setEmail("");
+        posthog.capture("newsletter_subscribe_success");
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Something went wrong.");
+        posthog.capture("newsletter_subscribe_failed", { error: data.error });
+      }
+    } catch (err) {
+      posthog.captureException(err);
       setStatus("error");
-      setMessage(data.error || "Something went wrong.");
+      setMessage("Something went wrong.");
     }
   }
 
@@ -32,24 +45,24 @@ export function NewsletterForm() {
       className="flex flex-col gap-3 sm:flex-row"
       onSubmit={handleSubmit}
     >
-      <input
+      <Input
         type="email"
         required
         value={email}
         onChange={e => setEmail(e.target.value)}
         placeholder="your@email.com"
-        className="flex-1 rounded-[var(--radius-sm)] px-4 py-2.5 text-nocturne outline-none placeholder:text-nocturne/30"
-        style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", fontSize: "var(--text-sm)", color: "var(--color-cream)" }}
+        className="flex-1 border-white/12 bg-white/8 text-cream placeholder:text-cream/30 md:h-10"
+        style={{ fontSize: "var(--text-sm)" }}
         disabled={status === "loading"}
       />
-      <button
+      <Button
         type="submit"
-        className="rounded-[var(--radius-sm)] text-nocturne font-semibold px-5 py-2.5 transition-opacity hover:opacity-80"
-        style={{ fontSize: "var(--text-sm)", background: "var(--color-cream)" }}
+        className="bg-cream font-semibold text-nocturne hover:bg-cream/90 md:h-10"
+        style={{ fontSize: "var(--text-sm)" }}
         disabled={status === "loading"}
       >
         {status === "loading" ? "Subscribing..." : "Subscribe"}
-      </button>
+      </Button>
       {message && (
         <span
           className={
