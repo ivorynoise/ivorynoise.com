@@ -4,12 +4,32 @@ import matter from "gray-matter";
 
 const POSTS_DIR = path.join(process.cwd(), "content/blogs");
 
+/** YAML front matter keys — any one set truthy surfaces the post under "Featured" on /blog (checked in this order). */
+const HIGHLIGHT_KEYS = ["highlight", "pinned", "featured"] as const;
+
+function isTruthyFrontmatter(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value === "string") {
+    const s = value.toLowerCase().trim();
+    return s === "true" || s === "yes" || s === "1";
+  }
+  return false;
+}
+
+function readHighlightFromMatter(data: Record<string, unknown>): boolean {
+  for (const key of HIGHLIGHT_KEYS) {
+    if (isTruthyFrontmatter(data[key])) return true;
+  }
+  return false;
+}
+
 export type PostMeta = {
   slug: string;
   title: string;
   publishedAt: string;
   description?: string;
   tags?: string[];
+  /** Featured / pinned post (from front matter: `highlight`, `pinned`, or `featured`). */
   pinned?: boolean;
   coverImage?: string;
   estimatedReadingTime?: number;
@@ -42,7 +62,7 @@ export function getAllPosts(): PostMeta[] {
         publishedAt: data.date ?? new Date().toISOString(),
         description: data.description,
         tags: data.tags ?? [],
-        pinned: data.pinned ?? false,
+        pinned: readHighlightFromMatter(data as Record<string, unknown>),
         coverImage: data.coverImage,
         estimatedReadingTime: readingTime(content),
       } satisfies PostMeta;
@@ -67,7 +87,7 @@ export function getPostBySlug(slug: string): PostFull | null {
     publishedAt: data.date ?? new Date().toISOString(),
     description: data.description,
     tags: data.tags ?? [],
-    pinned: data.pinned ?? false,
+    pinned: readHighlightFromMatter(data as Record<string, unknown>),
     coverImage: data.coverImage,
     estimatedReadingTime: readingTime(content),
     content,

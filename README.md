@@ -43,7 +43,9 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
 
 ## Content & Customization
 
-- **Blog posts:** Add Markdown files to `content/blogs/`. Each file uses frontmatter for metadata.
+- **Blog posts:** Add Markdown files to `content/blogs/`. Front matter is YAML between `---` lines. Common fields:
+  - `title`, `date` (ISO string), `description`, `tags` (array), optional `coverImage` (URL).
+  - **Feature at top of /blog** — set any one of `highlight: true`, `pinned: true`, or `featured: true` (strings like `"true"` also work). Featured posts render in the grid above “All posts”, ordered by `date` like the rest.
 - **Profile image:** Place your image at `public/images/deepak.jpg`.
 - **Favicon:** Place your SVG favicon as `src/app/icon.svg`.
 

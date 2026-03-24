@@ -1,5 +1,6 @@
 import { getAllPosts } from "@/lib/posts";
-import { FeatureCard, ArchiveRow } from "@/components/BlogCard";
+import { FeaturedCarousel } from "@/components/FeaturedCarousel";
+import { ArchiveRow } from "@/components/BlogCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -38,16 +39,12 @@ export default function BlogPage() {
         <section style={{ paddingBottom: "var(--section-py)" }}>
           <div className="site-container">
             <div
-              className="mb-8"
+              className="mb-10"
               style={{ borderTop: "var(--border)", paddingTop: "2rem" }}
             >
-              <p className="text-label text-nocturne/50">Featured</p>
+              <p className="text-label text-nocturne/40">Featured</p>
             </div>
-            <div className="grid gap-8 sm:grid-cols-2">
-              {pinned.map((post) => (
-                <FeatureCard key={post.slug} post={post} />
-              ))}
-            </div>
+            <FeaturedCarousel posts={pinned} />
           </div>
         </section>
       )}
