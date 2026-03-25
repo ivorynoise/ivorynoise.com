@@ -9,6 +9,8 @@ REPO_ROOT="$SCRIPT_DIR"
 cd "$REPO_ROOT"
 
 : "${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:?NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN is not set (PostHog project API key)}"
+: "${BREVO_API_KEY:?BREVO_API_KEY is not set (Brevo API key for /api/newsletter)}"
+: "${BREVO_LIST_ID:?BREVO_LIST_ID is not set (Brevo list id — CRM → Lists)}"
 POSTHOG_HOST="${NEXT_PUBLIC_POSTHOG_HOST:-https://us.i.posthog.com}"
 
 echo "Building Docker image..."

@@ -34,6 +34,12 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
+# Brevo: newsletter API reads these at runtime — must exist in final image (or override with `docker run -e`).
+ARG BREVO_API_KEY
+ARG BREVO_LIST_ID
+ENV BREVO_API_KEY=$BREVO_API_KEY
+ENV BREVO_LIST_ID=$BREVO_LIST_ID
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
