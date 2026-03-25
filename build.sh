@@ -16,6 +16,8 @@ echo "Building Docker image..."
 docker build \
   --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="$NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN" \
   --build-arg NEXT_PUBLIC_POSTHOG_HOST="$POSTHOG_HOST" \
+  --build-arg BREVO_API_KEY="$BREVO_API_KEY" \
+  --build-arg BREVO_LIST_ID="$BREVO_LIST_ID" \
   -f Dockerfile \
   -t "$REGISTRY/$IMAGE_NAME:latest" .
 

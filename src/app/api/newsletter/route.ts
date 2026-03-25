@@ -1,47 +1,91 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPostHogClient } from "@/lib/posthog-server";
 
-const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY!;
-const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID!;
-const DATACENTER = MAILCHIMP_API_KEY?.split("-")[1];
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_LIST_ID_RAW = process.env.BREVO_LIST_ID;
+
+function brevoErrorMessage(body: unknown): string {
+  if (!body || typeof body !== "object") return "Brevo error";
+  const o = body as Record<string, unknown>;
+  const msg = o.message;
+  if (typeof msg === "string") return msg;
+  if (Array.isArray(msg)) {
+    return msg.map(String).filter(Boolean).join(", ") || "Brevo error";
+  }
+  return "Brevo error";
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
-    if (!email || typeof email !== "string") {
+    if (!BREVO_API_KEY?.trim()) {
+      return NextResponse.json(
+        {
+          error:
+            "Add BREVO_API_KEY to your environment. Get a key from Brevo → Settings → SMTP & API → API keys. Restart the dev server after changing env vars.",
+        },
+        { status: 503 }
+      );
+    }
+
+    if (!BREVO_LIST_ID_RAW?.trim()) {
+      return NextResponse.json(
+        {
+          error:
+            "Add BREVO_LIST_ID to your environment (e.g. .env.local). In Brevo: CRM → Lists → open your list — the numeric ID is in the URL or list details. Restart the dev server after changing env vars.",
+        },
+        { status: 503 }
+      );
+    }
+
+    const listId = Number.parseInt(BREVO_LIST_ID_RAW.trim(), 10);
+    if (!Number.isFinite(listId) || listId < 1) {
+      return NextResponse.json({ error: "Invalid newsletter list id." }, { status: 500 });
+    }
+
+    const { email: raw } = await req.json();
+    if (!raw || typeof raw !== "string") {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    const data = {
-      email_address: email,
-      status: "subscribed",
-    };
+    const email = raw.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    }
 
-    const response = await fetch(
-      `https://${DATACENTER}.api.mailchimp.com/3.0/lists/${MAILCHIMP_LIST_ID}/members`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `apikey ${MAILCHIMP_API_KEY}`,
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch("https://api.brevo.com/v3/contacts", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "api-key": BREVO_API_KEY.trim(),
+      },
+      body: JSON.stringify({
+        email,
+        listIds: [listId],
+        updateEnabled: true,
+      }),
+    });
 
-    if (response.status === 200 || response.status === 201) {
+    if (response.ok) {
       const posthog = getPostHogClient();
       posthog?.capture({
         distinctId: email,
         event: "newsletter_subscribed",
-        properties: { email },
+        properties: { email, provider: "brevo" },
       });
       return NextResponse.json({ success: true });
-    } else {
-      const error = await response.json();
-      return NextResponse.json({ error: error.detail || "Mailchimp error" }, { status: 400 });
     }
-  } catch (err) {
+
+    const errBody = await response.json().catch(() => null);
+    const clientMessage = brevoErrorMessage(errBody);
+    const status =
+      response.status >= 400 && response.status < 600 ? response.status : 400;
+
+    return NextResponse.json(
+      { error: clientMessage },
+      { status: status >= 500 ? 502 : 400 }
+    );
+  } catch {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
