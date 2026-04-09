@@ -1,17 +1,33 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ═══════════════════════════════════════════
+   PALETTE PRIMITIVES (runtime — Tailwind must not inline these as hex)
+   Utilities like bg-cream read --color-cream → var(--palette-cream), so
+   .dark can swap palettes without rebuilding CSS.
+   ═══════════════════════════════════════════ */
+:root {
+  --palette-nocturne: #2c2e28;
+  --palette-slate:    #8a8978;
+  --palette-sand:     #e4e0d8;
+  --palette-cream:    #eeeae3;
+  --palette-forest:   #566247;
+  --palette-mauve:    #8b7080;
+}
+
 /* ═══════════════════════════════════════════
    TAILWIND COLOR TOKENS + FONT OVERRIDES
    ═══════════════════════════════════════════ */
 @theme inline {
-  /* ── Brand palette ── */
-  --color-nocturne: #2c2e28;
-  --color-slate:    #8a8978;
-  --color-sand:     #e4e0d8;
-  --color-cream:    #eeeae3;
-  --color-forest:   #566247;
-  --color-mauve:    #8b7080;
+  /* ── Brand palette (indirect → theme toggles work) ── */
+  --color-nocturne: var(--palette-nocturne);
+  --color-slate:    var(--palette-slate);
+  --color-sand:     var(--palette-sand);
+  --color-cream:    var(--palette-cream);
+  --color-forest:   var(--palette-forest);
+  --color-mauve:    var(--palette-mauve);
 
   /* shadcn/ui — semantic tokens (Ivory palette) */
   --color-background: var(--color-cream);
@@ -31,7 +47,7 @@
   --color-destructive: oklch(0.55 0.2 25);
   --color-border: oklch(0.35 0.02 90 / 0.22);
   --color-input: oklch(0.35 0.02 90 / 0.22);
-  --color-ring: var(--color-forest);
+  --color-ring: var(--color-slate);
 
   /* ── Font families (override Tailwind defaults, pull from next/font vars) ── */
   --font-serif: var(--font-title), "Playfair Display", Georgia, "Times New Roman", serif;
@@ -43,6 +59,7 @@
    Everything that is not a Tailwind color lives here as a named variable.
    ═══════════════════════════════════════════ */
 :root {
+  color-scheme: light;
   /* ── Layout ── */
   --max-w:       74rem;
   --px:          clamp(1.25rem, 4.5vw, 3rem);
@@ -78,6 +95,40 @@
   --dur-fast:  180ms;
   --dur-base:  360ms;
   --dur-slow:  700ms;
+}
+
+/* ═══════════════════════════════════════════
+   DARK THEME — swap primitives; Tailwind utilities follow via var() chain.
+   Footer restores light palettes so the nocturne band + forms stay correct.
+   ═══════════════════════════════════════════ */
+.dark {
+  color-scheme: dark;
+  --palette-nocturne: #e6e4dc;
+  --palette-cream: #131412;
+  --palette-sand: #1c1d1a;
+  --palette-slate: #949382;
+  --palette-forest: #9aad85;
+  --palette-mauve: #a38898;
+
+  --border: 1px solid rgba(230, 228, 220, 0.12);
+  --border-dark: 1px solid rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 28px -6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 24px 60px -16px rgba(0, 0, 0, 0.55);
+}
+
+.dark footer {
+  --palette-nocturne: #2c2e28;
+  --palette-cream: #eeeae3;
+  --palette-sand: #e4e0d8;
+  --palette-slate: #8a8978;
+  --palette-forest: #566247;
+  --palette-mauve: #8b7080;
+
+  --border: 1px solid rgba(44, 46, 40, 0.13);
+  --shadow-sm: 0 2px 10px rgba(44, 46, 40, 0.08);
+  --shadow-md: 0 8px 28px -6px rgba(44, 46, 40, 0.15);
+  --shadow-lg: 0 24px 60px -16px rgba(44, 46, 40, 0.28);
 }
 
 /* ═══════════════════════════════════════════
@@ -173,6 +224,10 @@
   color: rgba(44, 46, 40, 0.78);
 }
 
+.dark .prose-content {
+  color: rgba(230, 228, 220, 0.78);
+}
+
 .prose-content p {
   margin-block: 1.35em;
 }
@@ -207,13 +262,17 @@
 }
 
 .prose-content blockquote {
-  border-left: 3px solid var(--color-forest);
+  border-left: 3px solid color-mix(in oklab, var(--palette-nocturne) 28%, transparent);
   margin-inline: 0;
   padding: 0.5em 0 0.5em 1.5em;
   color: rgba(44, 46, 40, 0.6);
   font-style: italic;
   font-family: var(--font-serif);
   font-size: 1.08em;
+}
+
+.dark .prose-content blockquote {
+  color: rgba(230, 228, 220, 0.55);
 }
 
 .prose-content ul,
@@ -227,13 +286,15 @@
 }
 
 .prose-content a {
-  color: var(--color-forest);
+  color: var(--color-nocturne);
   text-decoration: underline;
   text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--palette-nocturne) 35%, transparent);
 }
 
 .prose-content a:hover {
-  opacity: 0.75;
+  opacity: 0.9;
+  text-decoration-color: color-mix(in oklab, var(--palette-nocturne) 55%, transparent);
 }
 
 .prose-content hr {
@@ -269,6 +330,72 @@
   border-radius: 0;
 }
 
+/* Highlighted fences (rehype-highlight) — stable dark surface; tokens stay readable in light + dark site themes */
+.prose-content pre:has(> code.hljs) {
+  background: #2a2c28;
+  color: #e8e6df;
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.dark .prose-content pre:has(> code.hljs) {
+  background: #131412;
+  color: #e6e4dc;
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.prose-content pre code.hljs {
+  display: block;
+  background: transparent;
+  color: inherit;
+}
+
+.prose-content .hljs-comment,
+.prose-content .hljs-quote {
+  color: #8f958a;
+  font-style: italic;
+}
+
+.prose-content .hljs-keyword,
+.prose-content .hljs-selector-tag,
+.prose-content .hljs-addition,
+.prose-content .hljs-subst {
+  color: #d4c896;
+}
+
+.prose-content .hljs-number,
+.prose-content .hljs-literal,
+.prose-content .hljs-variable,
+.prose-content .hljs-template-variable {
+  color: #d4a574;
+}
+
+.prose-content .hljs-string,
+.prose-content .hljs-doctag {
+  color: #a3c293;
+}
+
+.prose-content .hljs-title,
+.prose-content .hljs-section,
+.prose-content .hljs-type,
+.prose-content .hljs-built_in,
+.prose-content .hljs-tag {
+  color: #c8c8b8;
+}
+
+.prose-content .hljs-attr,
+.prose-content .hljs-attribute {
+  color: #d8ccb8;
+}
+
+.prose-content .hljs-function,
+.prose-content .hljs-title.function_ {
+  color: #a8bed4;
+}
+
+.prose-content .hljs-meta {
+  color: #8f958a;
+}
+
 .prose-content img {
   width: 100%;
   height: auto;
@@ -285,6 +412,10 @@
   border-radius: 6px;
 }
 
+.dark .prose-content .table-wrapper {
+  border-color: rgba(230, 228, 220, 0.12);
+}
+
 .prose-content table {
   width: 100%;
   border-collapse: collapse;
@@ -296,6 +427,10 @@
   background: rgba(44, 46, 40, 0.04);
 }
 
+.dark .prose-content thead {
+  background: rgba(230, 228, 220, 0.06);
+}
+
 .prose-content th {
   text-align: left;
   font-weight: 600;
@@ -305,10 +440,19 @@
   border-bottom: 2px solid rgba(44, 46, 40, 0.12);
 }
 
+.dark .prose-content th {
+  border-bottom-color: rgba(230, 228, 220, 0.14);
+}
+
 .prose-content td {
   padding: 0.75em 1.25em;
   color: rgba(44, 46, 40, 0.7);
   border-bottom: 1px solid rgba(44, 46, 40, 0.06);
+}
+
+.dark .prose-content td {
+  color: rgba(230, 228, 220, 0.65);
+  border-bottom-color: rgba(230, 228, 220, 0.08);
 }
 
 .prose-content tr:last-child td {
@@ -318,4 +462,43 @@
 .prose-content tbody tr:hover td {
   background: var(--color-sand);
   color: var(--color-nocturne);
+}
+
+/* Blog post — match home intro: sans, 0.875rem, leading 1.58, muted body copy */
+.blog-article .blog-article-prose {
+  margin-top: 0;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.58;
+  color: color-mix(in oklab, var(--palette-nocturne) 72%, transparent);
+}
+
+.blog-article .blog-article-prose p,
+.blog-article .blog-article-prose li,
+.blog-article .blog-article-prose th,
+.blog-article .blog-article-prose td {
+  font-family: var(--font-sans);
+}
+
+.blog-article .blog-article-prose blockquote {
+  font-family: var(--font-sans);
+}
+
+.blog-article .blog-article-prose td {
+  color: color-mix(in oklab, var(--palette-nocturne) 75%, transparent);
+}
+
+.blog-article .blog-article-prose code {
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.9em;
+}
+
+.blog-article .blog-article-prose pre,
+.blog-article .blog-article-prose pre code {
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+}
+
+.blog-article .blog-article-prose h2,
+.blog-article .blog-article-prose h3 {
+  scroll-margin-top: 6.5rem;
 }

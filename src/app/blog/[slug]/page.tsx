@@ -1,9 +1,14 @@
-import { getAllPosts, getPostBySlug } from "@/lib/posts";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
+
+import { BlogPostMarkdown } from "@/components/blog/BlogPostMarkdown";
+import { BlogPostToc } from "@/components/blog/BlogPostToc";
+import { extractTocFromMarkdown } from "@/lib/markdown-toc";
+import { getAllPosts, getPostBySlug } from "@/lib/posts";
+import { inlineLinkClass } from "@/lib/inline-link";
+import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -16,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPostBySlug(slug);
   if (!post) return {};
   return {
-    title: `${post.title} | Ivory Noise`,
+    title: `${post.title} | ${site.name}`,
     description: post.description,
   };
 }
@@ -26,6 +31,13 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  const outbound = post.externalUrl?.trim();
+  if (outbound) {
+    redirect(outbound);
+  }
+
+  const toc = extractTocFromMarkdown(post.content);
+
   const date = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -33,97 +45,100 @@ export default async function BlogPostPage({ params }: Props) {
   });
 
   return (
-    <>
-      
-      <section style={{ paddingTop: "var(--section-py)", paddingBottom: "2.5rem" }}>
-        <div className="site-container" style={{ maxWidth: "52rem" }}>
-          <Link
-            href="/blog"
-            className="text-label text-nocturne/55 hover:text-nocturne transition-colors mb-8 inline-block"
-          >
-            ← Back to writing
-          </Link>
-
-          <div className="flex flex-wrap items-center gap-3 mb-5 text-nocturne/55" style={{ fontSize: "var(--text-sm)" }}>
-            <time dateTime={post.publishedAt}>{date}</time>
-            {post.estimatedReadingTime && (
-              <span>{post.estimatedReadingTime} min read</span>
+    <div className="blog-article">
+      <section style={{ paddingTop: "clamp(2rem, 5vw, 3rem)", paddingBottom: "clamp(2.5rem, 6vw, 4rem)" }}>
+        <div className="site-container w-full" style={{ maxWidth: "var(--max-w)" }}>
+          <div
+            className={cn(
+              "grid gap-10 lg:gap-12 xl:gap-16",
+              toc.length > 0 && "lg:grid-cols-[minmax(0,1fr)_15.75rem]"
             )}
-          </div>
-
-          <h1
-            className="text-nocturne italic leading-[1.06]"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-hero)", fontWeight: 600 }}
           >
-            {post.title}
-          </h1>
+            <div className="min-w-0">
+              <Link
+                href="/blog"
+                className="mb-6 inline-block font-sans text-[0.8125rem] text-nocturne/55 transition-colors hover:text-nocturne"
+              >
+                ← All posts
+              </Link>
 
-          {post.description && (
-            <p
-              className="mt-5 text-nocturne/55"
-              style={{ fontSize: "var(--text-lead)", lineHeight: 1.75, maxWidth: "40rem" }}
-            >
-              {post.description}
-            </p>
-          )}
+              <h1
+                className="text-balance font-semibold leading-[1.08] tracking-tight text-nocturne"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "clamp(1.4rem, 3.2vw, 1.9rem)",
+                }}
+              >
+                {post.title}
+              </h1>
 
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-6">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-nocturne/50 uppercase tracking-wider"
-                  style={{
-                    border: "var(--border)",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "0.65rem",
-                    padding: "2px 8px",
-                  }}
+              <div
+                className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-nocturne/48"
+                style={{ fontSize: "0.875rem" }}
+              >
+                <time dateTime={post.publishedAt}>{date}</time>
+                {post.estimatedReadingTime ? (
+                  <>
+                    <span className="text-nocturne/30" aria-hidden>
+                      ·
+                    </span>
+                    <span>{post.estimatedReadingTime} min read</span>
+                  </>
+                ) : null}
+              </div>
+
+              {post.tags && post.tags.length > 0 ? (
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <li key={tag}>
+                      <span
+                        className="inline-block rounded-full bg-sand/70 px-3 py-1 font-sans font-medium uppercase tracking-wider text-nocturne/70 dark:bg-sand/55 dark:text-nocturne/65"
+                        style={{ fontSize: "0.68rem", letterSpacing: "0.08em" }}
+                      >
+                        {tag}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {post.description ? (
+                <p
+                  className="mt-6 max-w-[40rem] font-sans text-pretty text-nocturne/70"
+                  style={{ fontSize: "0.875rem", lineHeight: 1.58 }}
                 >
-                  {tag}
-                </span>
-              ))}
+                  {post.description}
+                </p>
+              ) : null}
+
+              <BlogPostToc items={toc} variant="mobile" />
+
+              <div className={toc.length === 0 ? "mt-12" : undefined}>
+                <BlogPostMarkdown content={post.content} />
+              </div>
             </div>
-          )}
+
+            {toc.length > 0 ? (
+              <aside className="relative hidden min-w-0 lg:block">
+                <BlogPostToc items={toc} variant="sidebar" />
+              </aside>
+            ) : null}
+          </div>
         </div>
       </section>
 
-      
-      <div className="site-container" style={{ maxWidth: "52rem" }}>
-        <hr style={{ borderColor: "var(--color-sand)" }} />
-      </div>
-
-      
-      <article style={{ paddingBlock: "var(--section-py)" }}>
-        <div className="site-container prose-content" style={{ maxWidth: "52rem" }}>
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              table: ({ children }) => (
-                <div className="table-wrapper">
-                  <table>{children}</table>
-                </div>
-              ),
-            }}
-          >
-            {post.content}
-          </ReactMarkdown>
-        </div>
-      </article>
-
-      
       <div
-        className="site-container"
-        style={{ maxWidth: "52rem", paddingBottom: "var(--section-py)", borderTop: "var(--border)", paddingTop: "2rem" }}
+        className="site-container border-t border-nocturne/10"
+        style={{
+          maxWidth: "var(--max-w)",
+          paddingBottom: "var(--section-py)",
+          paddingTop: "2rem",
+        }}
       >
-        <Link
-          href="/blog"
-          className="text-label text-nocturne/55 hover:text-nocturne transition-colors"
-          style={{ borderBottom: "1px solid currentColor", paddingBottom: "2px" }}
-        >
-          ← Back to writing
+        <Link href="/blog" className={inlineLinkClass} style={{ fontSize: "var(--text-sm)" }}>
+          ← All posts
         </Link>
       </div>
-    </>
+    </div>
   );
 }

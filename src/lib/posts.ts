@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+import type { BlogCategory } from "./post-taxonomy";
+
 const POSTS_DIR = path.join(process.cwd(), "content/blogs");
+
+export type { BlogCategory };
 
 /** YAML front matter keys — any one set truthy surfaces the post under "Featured" on /blog (checked in this order). */
 const HIGHLIGHT_KEYS = ["highlight", "pinned", "featured"] as const;
@@ -23,12 +27,29 @@ function readHighlightFromMatter(data: Record<string, unknown>): boolean {
   return false;
 }
 
+function readCategoryFromMatter(data: Record<string, unknown>): BlogCategory {
+  const v = data.category;
+  if (v === "technical" || v === "non-technical" || v === "financial") return v;
+  return "non-technical";
+}
+
+function readExternalUrl(data: Record<string, unknown>): string | undefined {
+  const v = data.externalUrl ?? data.external_url;
+  if (typeof v !== "string" || !v.trim()) return undefined;
+  return v.trim();
+}
+
 export type PostMeta = {
   slug: string;
   title: string;
   publishedAt: string;
   description?: string;
+  /** Optional byline for list + pinned rows */
+  author?: string;
   tags?: string[];
+  category: BlogCategory;
+  /** If set, featured and list links open this URL; `/blog/[slug]` redirects here. */
+  externalUrl?: string;
   /** Featured / pinned post (from front matter: `highlight`, `pinned`, or `featured`). */
   pinned?: boolean;
   coverImage?: string;
@@ -47,6 +68,11 @@ function slugFromFile(filename: string): string {
 }
 
 
+/** Pinned / featured posts (same front matter flags as `pinned` on `PostMeta`). */
+export function getPinnedPosts(): PostMeta[] {
+  return getAllPosts().filter((p) => p.pinned);
+}
+
 export function getAllPosts(): PostMeta[] {
   if (!fs.existsSync(POSTS_DIR)) return [];
 
@@ -61,7 +87,10 @@ export function getAllPosts(): PostMeta[] {
         title: data.title ?? slugFromFile(filename),
         publishedAt: data.date ?? new Date().toISOString(),
         description: data.description,
+        author: typeof data.author === "string" ? data.author.trim() || undefined : undefined,
         tags: data.tags ?? [],
+        category: readCategoryFromMatter(data as Record<string, unknown>),
+        externalUrl: readExternalUrl(data as Record<string, unknown>),
         pinned: readHighlightFromMatter(data as Record<string, unknown>),
         coverImage: data.coverImage,
         estimatedReadingTime: readingTime(content),
@@ -86,7 +115,10 @@ export function getPostBySlug(slug: string): PostFull | null {
     title: data.title ?? slug,
     publishedAt: data.date ?? new Date().toISOString(),
     description: data.description,
+    author: typeof data.author === "string" ? data.author.trim() || undefined : undefined,
     tags: data.tags ?? [],
+    category: readCategoryFromMatter(data as Record<string, unknown>),
+    externalUrl: readExternalUrl(data as Record<string, unknown>),
     pinned: readHighlightFromMatter(data as Record<string, unknown>),
     coverImage: data.coverImage,
     estimatedReadingTime: readingTime(content),

@@ -11,6 +11,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import posthog from "posthog-js";
 
 import type { PostMeta } from "@/lib/posts";
+import { getPostHref, isExternalPost } from "@/lib/post-links";
+import { inlineLinkClass } from "@/lib/inline-link";
 import { cn } from "@/lib/utils";
 
 const SWIPE_COMMIT_PX = 56;
@@ -31,6 +33,7 @@ function capturePostClick(post: PostMeta) {
     slug: post.slug,
     title: post.title,
     card_type: "featured_carousel",
+    external: isExternalPost(post),
   });
 }
 
@@ -47,14 +50,22 @@ function FeaturedSlide({
   interactive,
   isActive,
   dragBind,
+  variant,
 }: {
   post: PostMeta;
   interactive: boolean;
   isActive: boolean;
   dragBind: DragBind | null;
+  variant: "default" | "minimal";
 }) {
-  const imgWrapClass =
-    "relative overflow-hidden rounded-[var(--radius-sm)] outline-none";
+  const minimal = variant === "minimal";
+  const imgWrapClass = minimal
+    ? "relative overflow-hidden rounded-[var(--radius-md)] outline-none"
+    : "relative overflow-hidden rounded-[var(--radius-sm)] outline-none";
+
+  const imgFrame = minimal
+    ? "h-[132px] w-full sm:h-[148px] md:h-[156px]"
+    : "h-[200px] w-full sm:h-[220px] md:h-[248px]";
 
   const imgInner = (
     <>
@@ -62,16 +73,13 @@ function FeaturedSlide({
         <img
           src={post.coverImage}
           alt=""
-          className="h-[200px] w-full object-cover sm:h-[220px] md:h-[248px]"
+          className={`${imgFrame} object-cover`}
           draggable={false}
         />
       ) : (
-        <div
-          className="h-[200px] w-full bg-sand/60 sm:h-[220px] md:h-[248px]"
-          aria-hidden
-        />
+        <div className={`${imgFrame} bg-sand/50`} aria-hidden />
       )}
-      {interactive && isActive ? (
+      {interactive && isActive && !minimal ? (
         <>
           <div
             className="pointer-events-none absolute inset-y-0 left-0 w-[28%] bg-gradient-to-r from-nocturne/[0.07] to-transparent"
@@ -93,6 +101,77 @@ function FeaturedSlide({
     </>
   );
 
+  const href = getPostHref(post);
+  const external = isExternalPost(post);
+  const teaserClassName = minimal
+    ? "group mt-5 block w-full text-left outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-nocturne/20 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+    : "group mt-8 block max-w-2xl mx-auto outline-none focus-visible:ring-2 focus-visible:ring-nocturne/25 focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+
+  const teaserInner = (
+    <>
+      <p
+        className="text-nocturne/50 tabular-nums"
+        style={{
+          fontSize: minimal ? "var(--text-sm)" : "var(--text-xs)",
+          letterSpacing: minimal ? "0.01em" : "0.02em",
+        }}
+      >
+        <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+        {post.estimatedReadingTime != null && !external ? (
+          <>
+            <span className="mx-1.5 text-nocturne/25" aria-hidden>
+              ·
+            </span>
+            {post.estimatedReadingTime} min read
+          </>
+        ) : null}
+        {external ? (
+          <>
+            <span className="mx-1.5 text-nocturne/25" aria-hidden>
+              ·
+            </span>
+            <span>External</span>
+          </>
+        ) : null}
+      </p>
+
+      <h2
+        className="mt-2.5 text-balance text-nocturne font-semibold leading-snug tracking-tight transition-colors group-hover:text-slate"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: minimal ? "var(--text-title)" : "clamp(1.375rem, 3.2vw, 2rem)",
+        }}
+      >
+        {post.title}
+      </h2>
+
+      {post.description ? (
+        <p
+          className="mt-2 text-pretty text-nocturne/50 line-clamp-2"
+          style={{ fontSize: "var(--text-sm)", lineHeight: 1.65 }}
+        >
+          {post.description}
+        </p>
+      ) : null}
+
+      {minimal ? (
+        <p
+          className={cn(inlineLinkClass, "mt-4 group-hover:opacity-100")}
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          {external ? "Open article →" : "Read →"}
+        </p>
+      ) : (
+        <p
+          className="mt-5 inline-block border-b border-nocturne/25 pb-px text-nocturne/70 transition-colors group-hover:border-nocturne/50 group-hover:text-nocturne"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          {external ? "Open link" : "Read"}
+        </p>
+      )}
+    </>
+  );
+
   return (
     <article className="w-full">
       {dragBind ? (
@@ -100,62 +179,43 @@ function FeaturedSlide({
           {imgInner}
         </div>
       ) : (
-        <div className={imgWrapClass} style={{ border: "var(--border)" }}>
+        <div
+          className={imgWrapClass}
+          style={{
+            border: "var(--border)",
+            boxShadow: minimal ? "var(--shadow-sm)" : undefined,
+          }}
+        >
           {imgInner}
         </div>
       )}
 
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group mt-8 block max-w-2xl mx-auto outline-none focus-visible:ring-2 focus-visible:ring-forest/30 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
-        onClick={() => capturePostClick(post)}
-      >
-        <p
-          className="text-nocturne/45"
-          style={{ fontSize: "var(--text-xs)", letterSpacing: "0.02em" }}
+      {external ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={teaserClassName}
+          onClick={() => capturePostClick(post)}
         >
-          <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-          {post.estimatedReadingTime != null ? (
-            <>
-              <span className="mx-2 text-nocturne/25" aria-hidden>
-                ·
-              </span>
-              {post.estimatedReadingTime} min
-            </>
-          ) : null}
-        </p>
-
-        <h2
-          className="mt-3 text-balance text-nocturne font-medium leading-snug tracking-tight transition-colors group-hover:text-forest"
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(1.375rem, 3.2vw, 2rem)",
-          }}
-        >
-          {post.title}
-        </h2>
-
-        {post.description ? (
-          <p
-            className="mt-3 text-pretty text-nocturne/50 line-clamp-2"
-            style={{ fontSize: "var(--text-sm)", lineHeight: 1.7 }}
-          >
-            {post.description}
-          </p>
-        ) : null}
-
-        <p
-          className="mt-5 inline-block border-b border-nocturne/25 pb-px text-nocturne/70 transition-colors group-hover:border-nocturne/50 group-hover:text-nocturne"
-          style={{ fontSize: "var(--text-sm)" }}
-        >
-          Read
-        </p>
-      </Link>
+          {teaserInner}
+        </a>
+      ) : (
+        <Link href={href} className={teaserClassName} onClick={() => capturePostClick(post)}>
+          {teaserInner}
+        </Link>
+      )}
     </article>
   );
 }
 
-export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
+export function FeaturedCarousel({
+  posts,
+  variant = "default",
+}: {
+  posts: PostMeta[];
+  variant?: "default" | "minimal";
+}) {
   const [index, setIndex] = useState(0);
   const [dragX, setDragX] = useState(0);
   const [pointerActive, setPointerActive] = useState(false);
@@ -253,6 +313,7 @@ export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
         onPointerCancel: onPointerUp,
         style: {
           border: "var(--border)",
+          boxShadow: variant === "minimal" ? "var(--shadow-sm)" : undefined,
           touchAction: "none",
           cursor: pointerActive
             ? Math.abs(dragX) > 8
@@ -293,6 +354,7 @@ export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
                 interactive={interactive}
                 isActive={post.slug === posts[index]?.slug}
                 dragBind={dragBind}
+                variant={variant}
               />
             </div>
           ))}
@@ -300,22 +362,29 @@ export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
       </div>
 
       {interactive ? (
-        <div className="mx-auto mt-8 flex max-w-2xl items-center justify-between gap-6">
+        <div
+          className={cn(
+            "mt-6 flex w-full items-center justify-between gap-4",
+            variant === "default" && "mx-auto mt-8 max-w-2xl gap-6"
+          )}
+        >
           <button
             type="button"
             aria-label="Previous featured post"
-            className="min-h-11 min-w-11 rounded-[var(--radius-sm)] p-2 text-nocturne/35 transition-colors hover:bg-sand/40 hover:text-nocturne/90"
+            className={cn(
+              "rounded-[var(--radius-sm)] p-2 text-nocturne/40 transition-colors hover:bg-sand/50 hover:text-nocturne",
+              variant === "minimal" ? "min-h-9 min-w-9" : "min-h-11 min-w-11"
+            )}
             style={{ border: "var(--border)" }}
             onClick={() => go(-1)}
           >
-            <ChevronLeft className="mx-auto size-5" strokeWidth={1.25} />
+            <ChevronLeft
+              className={cn("mx-auto", variant === "minimal" ? "size-4" : "size-5")}
+              strokeWidth={1.25}
+            />
           </button>
 
-          <div
-            className="flex items-center gap-2"
-            role="tablist"
-            aria-label="Slides"
-          >
+          <div className="flex items-center gap-2" role="tablist" aria-label="Slides">
             {posts.map((post, i) => (
               <button
                 key={post.slug}
@@ -326,8 +395,12 @@ export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
                 className={cn(
                   "rounded-full transition-[width,background-color] duration-300",
                   i === index
-                    ? "h-1.5 w-7 bg-nocturne/65"
-                    : "size-1.5 bg-nocturne/20 hover:bg-nocturne/35"
+                    ? variant === "minimal"
+                      ? "h-1 w-6 bg-nocturne/40"
+                      : "h-1.5 w-7 bg-nocturne/65"
+                    : variant === "minimal"
+                      ? "size-1 bg-nocturne/15 hover:bg-nocturne/30"
+                      : "size-1.5 bg-nocturne/20 hover:bg-nocturne/35"
                 )}
                 onClick={() => setIndex(i)}
               />
@@ -337,11 +410,17 @@ export function FeaturedCarousel({ posts }: { posts: PostMeta[] }) {
           <button
             type="button"
             aria-label="Next featured post"
-            className="min-h-11 min-w-11 rounded-[var(--radius-sm)] p-2 text-nocturne/35 transition-colors hover:bg-sand/40 hover:text-nocturne/90"
+            className={cn(
+              "rounded-[var(--radius-sm)] p-2 text-nocturne/40 transition-colors hover:bg-sand/50 hover:text-nocturne",
+              variant === "minimal" ? "min-h-9 min-w-9" : "min-h-11 min-w-11"
+            )}
             style={{ border: "var(--border)" }}
             onClick={() => go(1)}
           >
-            <ChevronRight className="mx-auto size-5" strokeWidth={1.25} />
+            <ChevronRight
+              className={cn("mx-auto", variant === "minimal" ? "size-4" : "size-5")}
+              strokeWidth={1.25}
+            />
           </button>
         </div>
       ) : null}

@@ -1,6 +1,7 @@
 ---
 title: "Design Systems Compared: A Deep Dive into the Frameworks That Shape the Web"
 date: "2026-03-10"
+category: "non-technical"
 description: "An exhaustive comparison of the major design systems powering today's products — their philosophies, token structures, component APIs, and the trade-offs you rarely see discussed."
 pinned: true
 tags: ["design systems", "comparison", "tokens", "components"]

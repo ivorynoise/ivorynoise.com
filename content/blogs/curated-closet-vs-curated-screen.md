@@ -1,6 +1,7 @@
 ---
 title: "The Curated Closet vs. The Curated Screen"
 date: "2024-10-12"
+category: "non-technical"
 description: "Parallels between slow fashion and slow technology. How intentionality in what we consume digitally mirrors our physical environment."
 tags: ["curation", "lifestyle"]
 ---

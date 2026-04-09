@@ -1,6 +1,7 @@
 ---
 title: "Tactile Digitalism"
 date: "2024-10-18"
+category: "non-technical"
 description: "How the physicality of analog tools quietly shapes the best digital experiences — and what we lose when we forget it."
 tags: ["craft", "design", "analog"]
 pinned: true

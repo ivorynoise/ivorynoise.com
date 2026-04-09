@@ -25,7 +25,7 @@ export function NewsletterForm() {
       const data = await res.json();
       if (res.ok && data.success) {
         setStatus("success");
-        setMessage("You're subscribed!");
+        setMessage("Thank you for subscribing. You are subscribed now :)");
         setEmail("");
         posthog.capture("newsletter_subscribe_success");
       } else {

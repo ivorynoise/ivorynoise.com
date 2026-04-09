@@ -1,6 +1,7 @@
 ---
 title: "On Color: Beyond the Hex Code"
 date: "2024-09-29"
+category: "non-technical"
 description: "Why we should stop looking at screens when choosing palettes and start looking at the way moss grows on damp stone."
 tags: ["theory", "nature"]
 ---

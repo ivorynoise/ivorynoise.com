@@ -1,6 +1,7 @@
 ---
 title: "The Typographic Rhythm of Newsreader"
 date: "2024-09-15"
+category: "non-technical"
 description: "A deep dive into the high-contrast strokes and humanist characteristics of our primary display typeface."
 tags: ["typography"]
 ---

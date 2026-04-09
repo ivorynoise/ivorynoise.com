@@ -1,96 +1,139 @@
-import { getAllPosts } from "@/lib/posts";
-import { FeaturedCarousel } from "@/components/FeaturedCarousel";
-import { ArchiveRow } from "@/components/BlogCard";
+import Link from "next/link";
 import type { Metadata } from "next";
+import { Rss } from "lucide-react";
+
+import { PinnedPostsSection } from "@/components/blog/PinnedPostsSection";
+import { inlineLinkClass } from "@/lib/inline-link";
+import { getPostHref, isExternalPost } from "@/lib/post-links";
+import { getAllPosts, getPinnedPosts, type PostMeta } from "@/lib/posts";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Writing | Ivory Noise",
-  description: "Notes on design, systems, and building things that work.",
+  title: "Blogs | Deepak Aggarwal",
+  description: "Technical, non-technical, and financial writing — internal notes and external links.",
 };
+
+const MAX_W = "42rem";
+
+function formatListDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function BlogRow({ post }: { post: PostMeta }) {
+  const href = getPostHref(post);
+  const external = isExternalPost(post);
+
+  return (
+    <li className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne">
+      <time
+        className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
+        dateTime={post.publishedAt}
+      >
+        {formatListDate(post.publishedAt)}
+      </time>
+      <span className="text-nocturne/30">{` : `}</span>
+      {external ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={inlineLinkClass}>
+          {post.title}
+        </a>
+      ) : (
+        <Link href={href} className={inlineLinkClass}>
+          {post.title}
+        </Link>
+      )}
+    </li>
+  );
+}
 
 export default function BlogPage() {
   const posts = getAllPosts();
-  const pinned = posts.filter((p) => p.pinned);
-  const archive = posts.filter((p) => !p.pinned);
+  const total = posts.length;
+  const hasPinned = getPinnedPosts().length > 0;
 
   return (
-    <>
-      
-      <section style={{ paddingTop: "var(--section-py)", paddingBottom: "3rem" }}>
-        <div className="site-container" style={{ maxWidth: "52rem" }}>
-          <p className="text-label text-nocturne/50 mb-8">Writing</p>
-          <h1
-            className="text-nocturne leading-[1.08]"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-hero)", fontWeight: 600 }}
-          >
-            Notes & essays
-          </h1>
-          <p
-            className="mt-6 text-nocturne/65"
-            style={{ fontSize: "var(--text-lead)", lineHeight: 1.8, maxWidth: "30rem" }}
-          >
-            On design systems, product thinking, and the details that matter.
-          </p>
-        </div>
-      </section>
-
-      
-      {pinned.length > 0 && (
-        <section style={{ paddingBottom: "var(--section-py)" }}>
-          <div className="site-container">
-            <div
-              className="mb-10"
-              style={{ borderTop: "var(--border)", paddingTop: "2rem" }}
+    <section style={{ paddingBlock: "clamp(2rem, 5vw, 3.25rem)" }}>
+      <div className="site-container w-full">
+        <div className="w-full" style={{ maxWidth: MAX_W }}>
+        <header>
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-6">
+            <h1
+              className="text-balance font-semibold leading-[1.1] tracking-tight text-nocturne"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(1.45rem, 3.2vw, 1.95rem)",
+              }}
             >
-              <p className="text-label text-nocturne/40">Featured</p>
-            </div>
-            <FeaturedCarousel posts={pinned} />
+              Blogs
+              <span
+                className="font-sans font-normal tabular-nums text-nocturne/45"
+                style={{ fontSize: "clamp(0.9rem, 1.35vw, 1.05rem)" }}
+              >
+                {` (${total})`}
+              </span>
+            </h1>
+
+            <a
+              href="/rss.xml"
+              className={cn(
+                "inline-flex w-fit shrink-0 items-center gap-2 rounded-md border border-transparent px-3 py-1.5 font-mono text-xs font-medium transition-colors",
+                "bg-[#ffe58f] text-nocturne shadow-[0_1px_0_rgba(44,46,40,0.06)] hover:opacity-95",
+                "dark:border-nocturne/18 dark:bg-sand dark:text-nocturne dark:shadow-none dark:hover:bg-sand/90"
+              )}
+            >
+              Subscribe RSS Feed
+              <Rss className="size-3.5 opacity-80" aria-hidden />
+            </a>
           </div>
-        </section>
-      )}
 
-      
-      {archive.length > 0 && (
-        <section style={{ paddingBlock: "var(--section-py)", borderTop: "var(--border)" }}>
-          <div className="site-container">
-            <div className="grid gap-0 lg:grid-cols-[13rem_1fr]">
-              <div className="mb-10 lg:mb-0">
-                <p className="text-label text-nocturne/50">All posts</p>
-              </div>
-
-              
-              <div>
-                {archive.map((post) => (
-                  <ArchiveRow key={post.slug} post={post} />
-                ))}
-
-                <div
-                  className="mt-12"
-                  style={{ borderTop: "var(--border)", paddingTop: "2rem" }}
-                >
-                  <a
-                    href="/rss.xml"
-                    className="text-label text-nocturne/50 transition-colors hover:text-nocturne"
-                  >
-                    RSS Feed →
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      
-      {posts.length === 0 && (
-        <section style={{ paddingBlock: "var(--section-py)" }}>
-          <div className="site-container">
-            <p className="text-nocturne/60" style={{ fontSize: "var(--text-body)" }}>
-              No posts yet — check back soon.
+          <div
+            className="mt-5 max-w-none space-y-3 font-sans text-nocturne/68"
+            style={{ fontSize: "0.875rem", lineHeight: 1.58 }}
+          >
+            <p className="text-pretty">
+              Notes on engineering, systems, and building — technical, non-technical, and financial writing.
+            </p>
+            <p className="text-pretty">
+              Follow via{" "}
+              <a href="/rss.xml" className={inlineLinkClass}>
+                RSS
+              </a>
+              .
             </p>
           </div>
-        </section>
-      )}
-    </>
+
+          <hr className="mt-8 border-0 border-t border-nocturne/[0.1]" />
+        </header>
+
+        <PinnedPostsSection compact />
+
+        {total > 0 ? (
+          <>
+            <h2
+              id="all-posts-heading"
+              className={cn("text-label text-nocturne/45", hasPinned ? "mt-8" : "mt-6")}
+            >
+              All posts
+            </h2>
+            <ul
+              className="mt-3 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25"
+              aria-labelledby="all-posts-heading"
+            >
+              {posts.map((post) => (
+                <BlogRow key={post.slug} post={post} />
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="mt-8 font-sans text-nocturne/55" style={{ fontSize: "0.875rem" }}>
+            No posts yet — check back soon.
+          </p>
+        )}
+        </div>
+      </div>
+    </section>
   );
 }

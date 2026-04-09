@@ -5,8 +5,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { site } from "@/lib/site";
 
-/* --font-body  → consumed by --font-sans  in @theme inline as the sans typeface */
-/* --font-title → consumed by --font-serif in @theme inline as the display typeface */
 const bodyFont = Source_Sans_3({
   variable: "--font-body",
   subsets: ["latin"],
@@ -26,14 +24,23 @@ export const metadata: Metadata = {
   description: "Personal portfolio and blog.",
 };
 
+const themeInitScript = `(function(){try{var k='ivorynoise-theme',s=localStorage.getItem(k);if(s==='dark'){document.documentElement.classList.add('dark');return;}if(s==='light'){document.documentElement.classList.remove('dark');return;}if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bodyFont.variable} ${titleFont.variable} h-full antialiased`}>
-        <body className="min-h-full flex flex-col" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${bodyFont.variable} ${titleFont.variable} h-full antialiased`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-full flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
+import { getPostHref, isExternalPost } from "@/lib/post-links";
 import posthog from "posthog-js";
 
 function formatDate(dateStr: string) {
@@ -13,11 +14,35 @@ function formatDate(dateStr: string) {
 }
 
 export function FeatureCard({ post }: { post: PostMeta }) {
+  const href = getPostHref(post);
+  const external = isExternalPost(post);
+  const CardWrapper = external ? "a" : Link;
+  const linkProps = external
+    ? { href, target: "_blank" as const, rel: "noopener noreferrer" as const }
+    : { href };
+
   return (
     <article className="group transition-transform duration-300 hover:-translate-y-1">
-      <Link
-        href={`/blog/${post.slug}`}
-        onClick={() => posthog.capture("blog_post_clicked", { slug: post.slug, title: post.title, card_type: "featured" })}
+      <CardWrapper
+        {...linkProps}
+        {...(!external
+          ? {
+              onClick: () =>
+                posthog.capture("blog_post_clicked", {
+                  slug: post.slug,
+                  title: post.title,
+                  card_type: "featured",
+                }),
+            }
+          : {
+              onClick: () =>
+                posthog.capture("blog_post_clicked", {
+                  slug: post.slug,
+                  title: post.title,
+                  card_type: "featured",
+                  external: true,
+                }),
+            })}
       >
         <div
           className="w-full mb-4 overflow-hidden"
@@ -44,7 +69,7 @@ export function FeatureCard({ post }: { post: PostMeta }) {
         </time>
 
         <h2
-          className="mt-2 text-nocturne font-semibold leading-tight transition-colors group-hover:text-forest"
+          className="mt-2 text-nocturne font-semibold leading-tight transition-colors group-hover:text-slate"
           style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}
         >
           {post.title}
@@ -58,12 +83,15 @@ export function FeatureCard({ post }: { post: PostMeta }) {
             {post.description}
           </p>
         )}
-      </Link>
+      </CardWrapper>
     </article>
   );
 }
 
 export function ArchiveRow({ post }: { post: PostMeta }) {
+  const href = getPostHref(post);
+  const external = isExternalPost(post);
+
   return (
     <article
       className="group grid gap-4 py-8"
@@ -81,17 +109,42 @@ export function ArchiveRow({ post }: { post: PostMeta }) {
       </time>
 
       <div>
-        <Link
-          href={`/blog/${post.slug}`}
-          onClick={() => posthog.capture("blog_post_clicked", { slug: post.slug, title: post.title, card_type: "archive" })}
-        >
-          <h3
-            className="text-nocturne font-semibold leading-tight transition-colors group-hover:text-forest"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}
+        {external ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() =>
+              posthog.capture("blog_post_clicked", {
+                slug: post.slug,
+                title: post.title,
+                card_type: "archive",
+                external: true,
+              })
+            }
           >
-            {post.title}
-          </h3>
-        </Link>
+            <h3
+              className="text-nocturne font-semibold leading-tight transition-colors group-hover:text-slate"
+              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}
+            >
+              {post.title}
+            </h3>
+          </a>
+        ) : (
+          <Link
+            href={href}
+            onClick={() =>
+              posthog.capture("blog_post_clicked", { slug: post.slug, title: post.title, card_type: "archive" })
+            }
+          >
+            <h3
+              className="text-nocturne font-semibold leading-tight transition-colors group-hover:text-slate"
+              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}
+            >
+              {post.title}
+            </h3>
+          </Link>
+        )}
 
         {post.description && (
           <p

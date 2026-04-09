@@ -1,6 +1,7 @@
 ---
 title: "The Architecture of Silence: Why Modern UI Needs More Breath"
 date: "2024-10-24"
+category: "non-technical"
 description: "In an era of notification density, the most radical design choice is to give the user nothing — and mean it."
 tags: ["design", "ui", "philosophy"]
 pinned: true

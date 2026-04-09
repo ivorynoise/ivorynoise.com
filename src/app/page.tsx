@@ -1,266 +1,261 @@
 import Image from "next/image";
-import { Server, Database, Users, Rocket } from "lucide-react";
-import { TrackedLink } from "@/components/TrackedLink";
+import Link from "next/link";
+
+import { SocialLinks } from "@/components/SocialLinks";
+import { getPostHref, isExternalPost } from "@/lib/post-links";
+import { getAllPosts } from "@/lib/posts";
+import { readingItems } from "@/data/reading";
+import { inlineLinkClass } from "@/lib/inline-link";
+import { site } from "@/lib/site";
 
 import deepakPhoto from "../../public/images/deepak.jpg";
 
-const expertise = [
-  {
-    Icon: Server,
-    title: "Systems Architecture",
-    body: "Designing distributed backends, API platforms, and infrastructure that scales without accumulating debt.",
-  },
-  {
-    Icon: Database,
-    title: "Developer Tooling",
-    body: "Building internal tools and developer infrastructure that remove daily friction and let teams ship faster.",
-  },
-  {
-    Icon: Users,
-    title: "Engineering Leadership",
-    body: "Scaling teams from 0 to 1 — hiring, culture, shipping cadence, and the hard conversations nobody warns you about.",
-  },
-];
+const RECENT_POSTS = 5;
+const RECENT_READING = 5;
 
-export default function AboutPage() {
+const highlights = [
+  "Backend and distributed systems engineer with 9+ years of experience, now focused on building the infrastructure layer that makes AI systems production-ready at scale.",
+  "Started in high-stakes financial data systems, scaled through Meta's distributed infrastructure processing 100M+ events/day, then founded and led engineering teams building crypto and AI-first products.",
+  "Brings a rare combination of deep backend engineering, founding-level ownership, and hands-on AI infra experience spanning LLM observability, evaluation pipelines, and voice agent orchestration.",
+  "Proven track record leading and mentoring engineers across founding and growth-stage environments, driving architecture decisions from zero to production.",
+  "Experience across Meta, Y-Combinator startups, and self-founded ventures across the US, UK, and India.",
+] as const;
+
+function formatListDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export default function HomePage() {
+  const posts = getAllPosts().slice(0, RECENT_POSTS);
+  const reading = readingItems.slice(0, RECENT_READING);
+
   return (
     <>
-      
-      <section className="py-16 lg:py-28">
-        <div className="site-container grid items-center gap-16 lg:grid-cols-[1fr_0.55fr]">
-          <div>
+      <section className="py-9 lg:py-12">
+        <div className="site-container grid max-w-[70rem] items-start gap-8 sm:gap-10 lg:grid-cols-[1fr_min(36%,400px)] lg:gap-12 lg:items-stretch">
+          <div className="min-w-0">
             <h1
-              className="text-nocturne leading-[1.12]"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-hero)", fontWeight: 600 }}
+              className="text-balance font-semibold leading-[1.08] tracking-tight text-nocturne"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(1.4rem, 3.2vw, 1.9rem)",
+              }}
             >
-              Hey, I&apos;m Deepak
+              Hey, I am {site.name.split(" ")[0]}
             </h1>
             <p
-              className="mt-3 text-nocturne/50"
-              style={{ fontSize: "var(--text-lead)", lineHeight: 1.7 }}
+              className="mt-2 max-w-[40rem] italic leading-snug text-[#b04a37]"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(0.8rem, 1.15vw, 0.92rem)",
+              }}
             >
-              engineering, systems, and startups. always building.
+              Agentic AI, system architecture, and scalable apps — always building.
             </p>
 
-            <p
-              className="mt-8 text-nocturne/70"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.9, maxWidth: "34rem" }}
+            <div
+              className="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty text-nocturne/70"
+              style={{ fontSize: "0.875rem", lineHeight: 1.58 }}
             >
-              I am a software engineer and technical leader with a deep focus on
-              systems architecture, developer tooling, and building products from
-              scratch. Currently, I am the Cofounder &amp; CTO of{" "}
-              <strong className="text-nocturne font-semibold">Synthlane Technologies</strong>,
-              where we are building infrastructure that helps engineering teams
-              ship faster without compromising on reliability.
-            </p>
+              <p>
+                I am a full stack software engineer and engineering leader passionate about Agentic AI, system
+                architecture, and scalable apps. Currently, I am a Senior Software Engineer at{" "}
+                <strong className="font-semibold text-nocturne">Reinforcelabs.ai</strong>, working at the intersection
+                of security and AI. Previously, I was head of engineering at{" "}
+                <strong className="font-semibold text-nocturne">Authlayer</strong>, where I worked on building{" "}
+                <a href="https://www.finlens.app/" className={inlineLinkClass} rel="noopener noreferrer">
+                  Finlens
+                </a>{" "}
+                and ZeFi. I previously worked with <strong className="font-semibold text-nocturne">Facebook</strong>,
+                London, on the Portal Release Infrastructure Team.
+              </p>
+              <p>My areas of interest include agentic AI and distributed systems.</p>
+              <p>
+                In 2024, I took a leap of faith and co-founded{" "}
+                <strong className="font-semibold text-nocturne">Browmath Capital</strong>. I was part of the{" "}
+                <strong className="font-semibold text-nocturne">Meta Platform Engineering</strong> team, where I worked
+                on platform reliability, distributed infrastructure, and release systems at scale.
+              </p>
+              <p>
+                I held engineering leadership positions (both IC and management) at{" "}
+                <a href="https://unacademy.com/" className={inlineLinkClass} rel="noopener noreferrer">
+                  Unacademy
+                </a>
+                , where I built, grew, and led Search, Site Reliability Engineering (SRE), and Data Engineering teams. I
+                hold more than 12 years of experience scaling backend services and taking products and teams from 0 to 1
+                — and beyond.
+              </p>
+              <p>
+                I keep diving deep into engineering details and share my learnings across my{" "}
+                <a href="https://x.com/_deepakaggarwal" className={inlineLinkClass} rel="noopener noreferrer">
+                  socials
+                </a>{" "}
+                and videos on{" "}
+                <a
+                  href="https://www.youtube.com/@DeepakAggarwal77"
+                  className={inlineLinkClass}
+                  rel="noopener noreferrer"
+                >
+                  YouTube
+                </a>
+                .
+              </p>
+            </div>
 
-            <div className="mt-8 flex gap-4">
-              <TrackedLink
-                href="/blog"
-                event="cta_clicked"
-                properties={{ label: "Read my writing", location: "hero" }}
-                className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] px-5 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-85"
-                style={{ background: "var(--color-nocturne)" }}
+            <div className="mt-6" id="social">
+              <SocialLinks variant="ghost" subset="hero" dense />
+            </div>
+
+            <div className="mt-7 border-t border-nocturne/[0.09] pt-6">
+              <p className="text-label mb-3 text-nocturne/40">At a glance</p>
+              <ul
+                className="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty marker:text-nocturne/28"
+                style={{ fontSize: "0.8125rem", lineHeight: 1.5 }}
               >
-                Read my writing
-              </TrackedLink>
-              <TrackedLink
-                href="mailto:deepak@synthlane.com"
-                event="cta_clicked"
-                properties={{ label: "Say hello", location: "hero" }}
-                className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] px-5 py-2.5 text-sm font-semibold text-nocturne/70 transition-colors hover:text-nocturne"
-                style={{ border: "var(--border)" }}
-              >
-                Say hello
-              </TrackedLink>
+                {highlights.map((line, i) => (
+                  <li key={i} className="text-nocturne/68">
+                    {line}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          <div className="relative">
-            <div
-              className="overflow-hidden"
-              style={{ borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-lg)" }}
-            >
-              <Image
-                src={deepakPhoto}
-                alt="Deepak Aggarwal"
-                width={420}
-                height={520}
-                priority
-                className="w-full object-cover"
-                style={{ aspectRatio: "4/5" }}
-              />
+          <div className="flex justify-center lg:block lg:justify-end">
+            <div className="relative w-full max-w-[300px] sm:max-w-[340px] lg:max-w-none lg:sticky lg:top-[4.75rem] lg:self-start">
+              <div
+                className="overflow-hidden bg-sand/50 ring-1 ring-nocturne/[0.06]"
+                style={{
+                  borderRadius: "var(--radius-lg)",
+                  boxShadow: "var(--shadow-sm)",
+                }}
+              >
+                <Image
+                  src={deepakPhoto}
+                  alt={site.name}
+                  width={420}
+                  height={520}
+                  priority
+                  className="aspect-[4/5] w-full object-cover object-[center_12%]"
+                  sizes="(max-width: 1024px) 280px, 400px"
+                />
+              </div>
             </div>
-            <div
-              className="absolute -z-10"
-              style={{
-                width: "180px",
-                height: "180px",
-                borderRadius: "50%",
-                background: "var(--color-forest)",
-                opacity: 0.07,
-                top: "-2rem",
-                right: "-2rem",
-              }}
-            />
           </div>
         </div>
       </section>
 
-      
       <section
+        className="border-t border-nocturne/[0.08]"
         style={{
-          paddingBlock: "var(--section-py)",
+          paddingBlock: "clamp(2rem, 4vw, 2.75rem)",
           background: "var(--color-sand)",
         }}
       >
-        <div className="site-container grid gap-14 lg:grid-cols-2" style={{ maxWidth: "60rem" }}>
+        <div className="site-container grid max-w-[70rem] gap-9 sm:gap-10 lg:grid-cols-2">
           <div>
             <h2
-              className="text-nocturne mb-6"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-display)", fontWeight: 600 }}
+              className="font-semibold leading-snug text-nocturne"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(0.98rem, 1.35vw, 1.12rem)",
+              }}
             >
-              Background
+              Recent blog posts ·{" "}
+              <Link href="/blog" className={inlineLinkClass}>
+                Full archive →
+              </Link>
             </h2>
-            <p
-              className="text-nocturne/70"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.9 }}
-            >
-              Before Synthlane, I spent years in backend engineering — designing
-              distributed systems, building APIs that serve millions of requests,
-              and leading engineering teams through the messy process of scaling
-              from zero to one. I have held both IC and leadership roles, and
-              I&apos;ve found that the best engineering leaders never stop
-              writing code.
+            <p className="mt-1.5 font-sans text-nocturne/52" style={{ fontSize: "0.8125rem" }}>
+              Things I have written recently.
             </p>
-            <p
-              className="mt-6 text-nocturne/70"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.9 }}
-            >
-              My areas of interest include platform engineering, API design,
-              database internals, and the organizational problems that show up
-              when you try to scale a team alongside a codebase. I think most
-              technical debt is actually decision debt — the cost of choices
-              nobody wrote down.
-            </p>
+            <ul className="mt-4 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25">
+              {posts.map((post) => {
+                const href = getPostHref(post);
+                const ext = isExternalPost(post);
+                const date = formatListDate(post.publishedAt);
+                return (
+                  <li
+                    key={post.slug}
+                    className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne"
+                  >
+                    <time
+                      className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
+                      dateTime={post.publishedAt}
+                    >
+                      {date}
+                    </time>
+                    <span className="text-nocturne/30">{` : `}</span>
+                    {ext ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className={inlineLinkClass}>
+                        {post.title}
+                      </a>
+                    ) : (
+                      <Link href={href} className={inlineLinkClass}>
+                        {post.title}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+
           <div>
             <h2
-              className="text-nocturne mb-6"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-display)", fontWeight: 600 }}
+              className="font-semibold leading-snug text-nocturne"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "clamp(0.98rem, 1.35vw, 1.12rem)",
+              }}
             >
-              Philosophy
+              Recent reading ·{" "}
+              <Link href="/reading" className={inlineLinkClass}>
+                Reading list →
+              </Link>
             </h2>
-            <p
-              className="text-nocturne/70"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.9 }}
-            >
-              I believe small teams beat large ones almost every time. That the
-              best code is the code you don&apos;t write. That most meetings are
-              a symptom of unclear thinking — and if you need a meeting to
-              decide something, you probably don&apos;t understand the problem yet.
+            <p className="mt-1.5 font-sans text-nocturne/52" style={{ fontSize: "0.8125rem" }}>
+              Papers and posts I am reading or recommend.
             </p>
-            <p
-              className="mt-6 text-nocturne/70"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.9 }}
-            >
-              I write about the things I learn while building — systems design,
-              technical leadership, and the decisions that compound over time.
-              Not advice. Just notes from the field.
-            </p>
+            <ul className="mt-4 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25">
+              {reading.map((item) => {
+                const meta = [item.author, item.source].filter(Boolean).join(" · ");
+                return (
+                  <li
+                    key={item.url}
+                    className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne"
+                  >
+                    {item.date ? (
+                      <>
+                        <time
+                          className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
+                          dateTime={item.date}
+                        >
+                          {formatListDate(item.date)}
+                        </time>
+                        <span className="text-nocturne/30">{` : `}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-mono text-[0.8125rem] tabular-nums text-nocturne/38">—</span>
+                        <span className="text-nocturne/30">{` : `}</span>
+                      </>
+                    )}
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" className={inlineLinkClass}>
+                      {item.title}
+                    </a>
+                    {meta ? <span className="text-nocturne/45">{` · ${meta}`}</span> : null}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </div>
-      </section>
-
-      
-      <section style={{ paddingBlock: "var(--section-py)" }}>
-        <div className="site-container">
-          <div className="grid gap-6 lg:grid-cols-2 mb-14">
-            <h2
-              className="text-nocturne"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-display)", fontWeight: 600 }}
-            >
-              Core<br />Expertise
-            </h2>
-            <p
-              className="text-nocturne/55 self-end"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.75 }}
-            >
-              A focused toolkit built through years of shipping products,
-              scaling teams, and learning what actually matters at each stage.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-3">
-            {expertise.map(({ Icon, title, body }, i) => (
-              <div
-                key={title}
-                className="p-8"
-                style={{
-                  borderLeft: i > 0 ? "var(--border)" : "none",
-                  borderTop: "var(--border)",
-                  borderBottom: "var(--border)",
-                }}
-              >
-                <Icon
-                  className="mb-6"
-                  style={{
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    color: "var(--color-mauve)",
-                    strokeWidth: 1.4,
-                  }}
-                />
-                <h3
-                  className="text-nocturne font-semibold mb-3"
-                  style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)" }}
-                >
-                  {title}
-                </h3>
-                <p
-                  className="text-nocturne/60"
-                  style={{ fontSize: "var(--text-sm)", lineHeight: 1.8 }}
-                >
-                  {body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      
-      <section
-        style={{
-          background: "var(--color-nocturne)",
-          color: "var(--color-cream)",
-          paddingBlock: "clamp(2.5rem, 5vw, 4rem)",
-        }}
-      >
-        <div className="site-container flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-cream/55 mb-1" style={{ fontSize: "var(--text-sm)" }}>
-              Open to conversations
-            </p>
-            <p
-              className="text-cream leading-tight"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "var(--text-title)", fontWeight: 600 }}
-            >
-              Building something interesting? Let&apos;s talk.
-            </p>
-          </div>
-          <TrackedLink
-            href="mailto:deepak@synthlane.com"
-            event="cta_clicked"
-            properties={{ label: "Get in touch", location: "contact_banner" }}
-            className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] text-nocturne font-semibold px-6 py-3 text-sm transition-opacity hover:opacity-85 shrink-0"
-            style={{ background: "var(--color-cream)" }}
-          >
-            Get in touch
-          </TrackedLink>
         </div>
       </section>
     </>
   );
 }
-
