@@ -1,6 +1,11 @@
 pre-commit:
   parallel: false
   commands:
+    format:
+      glob: "*.{ts,tsx,js,jsx,json,css}"
+      stage_fixed: true
+      run: npx biome format --write {staged_files}
+
     type-check:
       run: npx tsc --noEmit
 

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   description: "Personal portfolio and blog.",
 };
 
-const themeInitScript = `(function(){try{var k='ivorynoise-theme',s=localStorage.getItem(k);if(s==='dark'){document.documentElement.classList.add('dark');return;}if(s==='light'){document.documentElement.classList.remove('dark');return;}if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+const themeInitScript = `(function(){try{var k='ivorynoise-theme',s=localStorage.getItem(k);if(s==='dark'){document.documentElement.classList.add('dark');return;}document.documentElement.classList.remove('dark');}catch(e){}})();`;
 
 export default function RootLayout({
   children,

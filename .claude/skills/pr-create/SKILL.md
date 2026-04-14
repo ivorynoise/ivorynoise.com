@@ -21,10 +21,10 @@ Use `gh` CLI to create PRs with a human-friendly summary of changes. Always veri
    gh auth switch --user deepak-syn
    ```
 
-2. **Summarize changes from the base branch**
+2. **Summarize changes from the main branch**
    ```bash
-   git log <base-branch>...HEAD --oneline
-   git diff <base-branch>...HEAD --stat
+   git log main...HEAD --oneline
+   git diff main...HEAD --stat
    ```
    Use this to write a human-friendly PR description — not a raw commit dump.
 
