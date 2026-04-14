@@ -48,6 +48,16 @@ Use `gh` CLI to create PRs with a human-friendly summary of changes. Always veri
 - Base branch is typically `main` unless the user specifies otherwise.
 - PR description must be human-friendly: explain intent, not just list commits.
 - Keep title under 70 characters.
+- **All commits must follow the Conventional Commits style** enforced by `commitlint` (`@commitlint/config-conventional`). The `commit-msg` hook will reject non-conforming messages.
+
+  Format: `<type>(<optional scope>): <subject>`
+
+  Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+  Examples:
+  - `fix: correct default theme to light`
+  - `feat(blog): add reading time to post header`
+  - `chore: add Biome formatter`
 
 ## Common Mistakes
 
@@ -56,3 +66,4 @@ Use `gh` CLI to create PRs with a human-friendly summary of changes. Always veri
 | Wrong `gh` account active | Run `gh auth status` first, switch if needed |
 | Description is raw commit list | Summarize intent and changes in plain language |
 | Forgetting to push branch | `git push -u origin <branch>` before `gh pr create` |
+| Commit message missing type prefix | Use `type: subject` format — `commitlint` will block the commit otherwise |
