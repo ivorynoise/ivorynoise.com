@@ -1,0 +1,18 @@
+pre-commit:
+  parallel: false
+  commands:
+    type-check:
+      run: npx tsc --noEmit
+
+    eslint:
+      glob: "*.{ts,tsx,js,jsx}"
+      run: npx eslint {staged_files}
+
+    secrets-scan:
+      glob: "*.{ts,tsx,js,jsx,json,env,yaml,yml}"
+      run: npx secretlint {staged_files}
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}

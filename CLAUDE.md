@@ -6,13 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Ivory Noise is a personal portfolio and blog site built with Next.js 16 (App Router), React 19, TypeScript, and Tailwind CSS v4. It uses file-based Markdown content (no CMS/database), PostHog analytics, and deploys via Docker to a Harbor registry.
 
+## Development Setup
+- Node Version: 22 (v22.x)
+- Package Manager: npm (Dockerfile and package-lock.json; pnpm-lock.yaml also present)
+- Secret Manager: Pre-authenticated Infisical CLI
+
+## Environment Variables
+- `BREVO_API_KEY` - Brevo API Key to authenticate Newsletter service
+- `BREVO_LIST_ID` - Brevo LIST key to add users to the newsletter
+- `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` — Required for analytics (also passed as Docker build arg)
+- `NEXT_PUBLIC_POSTHOG_HOST` — Optional, defaults to `https://us.i.posthog.com`
+
 ## Commands
 
 ```bash
-npm run dev       # Local dev server on port 3000
-npm run build     # Production build
-npm run start     # Start production server
-npm run lint      # ESLint (next/core-web-vitals + typescript)
+infisical secrets --env=prod npm run dev       # Local dev server on port 3000
+infisical secrets --env=prod npm run build     # Production build
+infisical secrets --env=prod npm run start     # Start production server
+infisical secrets --env=prod npm run lint      # ESLint (next/core-web-vitals + typescript)
 ```
 
 No test framework is configured.
@@ -26,6 +37,8 @@ Blog posts are Markdown files in `content/blogs/` with YAML frontmatter (title, 
 - `/` — Home/about page (hero, background, philosophy, expertise sections)
 - `/blog` — Blog listing with featured (pinned) posts and archive
 - `/blog/[slug]` — Individual post rendered with `react-markdown` + `remark-gfm` + `rehype-highlight`
+- `/reading` — Curated reading list (data from `src/data/reading.ts`)
+- `/books` — Book list (data from `src/data/books.ts`)
 - `/api/newsletter` — POST endpoint for Brevo newsletter signup
 
 ### Analytics (PostHog)
@@ -33,12 +46,13 @@ Blog posts are Markdown files in `content/blogs/` with YAML frontmatter (title, 
 - Server-side: `posthog-node` in `src/lib/posthog-server.ts` for newsletter events
 - `TrackedLink` component wraps links with event capture
 - API requests proxied through Next.js rewrites (`/ingest/*` → PostHog)
-- Key events: `cta_clicked`, `social_link_clicked`, `blog_post_clicked`, `newsletter_submitted`
+- Key events: `cta_clicked`, `social_link_clicked`, `blog_post_clicked`, `newsletter_submitted` (client-side), `newsletter_subscribed` (server-side, after successful Brevo signup)
 
 ### Components
-- `src/components/ui/` — shadcn/ui primitives (Button, Input, Label) configured via `components.json`
-- `src/components/` — Feature components (Header, Footer, BlogCard, NewsletterForm, SocialLinks, TrackedLink)
+- `src/components/ui/` — Base UI (`@base-ui/react`) primitives (Button, Input, Label), wired via shadcn-style `components.json`
+- `src/components/` — Feature components (Header, Footer, BlogCard, NewsletterForm, SocialLinks, TrackedLink, FeaturedCarousel, PinnedBlogCarousel, ThemeToggle)
 - `src/lib/utils.ts` — `cn()` utility for Tailwind class merging
+- `src/data/` — Static TypeScript data files: `reading.ts` (reading list), `books.ts` (books)
 
 ### Design System (globals.css)
 Custom CSS variables define the entire design language:
@@ -51,11 +65,10 @@ Custom CSS variables define the entire design language:
 ### Path Aliases
 `@/*` maps to `./src/*` (configured in tsconfig.json).
 
-## Environment Variables
-- `BREVO_API_KEY` - Brevo API Key to authenticate Newsletter service
-- `BREVO_LIST_ID` - Brevo LIST key to add users to the newsletter
-- `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` — Required for analytics (also passed as Docker build arg)
 
 ## Build & Deploy
 
 Docker multi-stage build (Node 24-alpine) with standalone Next.js output. `build.sh` builds and pushes to `central-harbor.ext.synthlane.com/internal/ivorynoise-com`. CI runs via GitHub Actions (`.github/workflows/ivory-noise-fe.yml`) with manual dispatch, supporting dev/prod environments.
+
+## Project-Specific Gotchas
+- Never read anything inside .ignore/ directory
