@@ -17,10 +17,10 @@ function BookRow({ book }: { book: BookEntry }) {
           [{book.tag}]{` `}
         </span>
       ) : null}
-      <span className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48">
+      {/* <span className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48">
         {book.year}
-      </span>
-      <span className="text-nocturne/30">{` : `}</span>
+      </span> */}
+      {/* <span className="text-nocturne/30">{` : `}</span> */}
       <a
         href={book.url}
         target="_blank"
@@ -94,13 +94,19 @@ export default function BooksPage() {
             </h1>
 
             <p className="mt-5 font-sans text-pretty">
-              Technical and non-technical books worth your time.
+              Technical and non-technical books that had shaped my outlook
+              towards the world.
             </p>
 
             <hr className="mt-8 border-0 border-t border-nocturne/[0.1]" />
           </header>
 
           <BookSection id="technical" title="Technical" items={technical} />
+          <BookSection
+            id="startup"
+            title="Startup"
+            items={booksByCategory("startup")}
+          />
           <BookSection
             id="non-technical"
             title="Non-technical"

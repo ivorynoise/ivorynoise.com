@@ -2,10 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Rss } from "lucide-react";
 
-import { PinnedPostsSection } from "@/components/blog/PinnedPostsSection";
-import { inlineLinkClass } from "@/lib/inline-link";
 import { getPostHref, isExternalPost } from "@/lib/post-links";
-import { getAllPosts, getPinnedPosts, type PostMeta } from "@/lib/posts";
+import { getAllPosts, type PostMeta } from "@/lib/posts";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -29,25 +27,27 @@ function BlogRow({ post }: { post: PostMeta }) {
   const external = isExternalPost(post);
 
   return (
-    <li className="font-sans text-pretty text-nocturne">
+    <li className="grid grid-cols-[7.5rem_1fr] gap-x-4 font-sans text-nocturne">
       <time
-        className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
+        className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48 pt-[0.1em]"
         dateTime={post.publishedAt}
       >
         {formatListDate(post.publishedAt)}
       </time>
-      <span className="text-nocturne/30">{` : `}</span>
       {external ? (
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={inlineLinkClass}
+          className="text-nocturne transition-opacity hover:opacity-70"
         >
           {post.title}
         </a>
       ) : (
-        <Link href={href} className={inlineLinkClass}>
+        <Link
+          href={href}
+          className="text-nocturne transition-opacity hover:opacity-70"
+        >
           {post.title}
         </Link>
       )}
@@ -58,7 +58,6 @@ function BlogRow({ post }: { post: PostMeta }) {
 export default function BlogPage() {
   const posts = getAllPosts();
   const total = posts.length;
-  const hasPinned = getPinnedPosts().length > 0;
 
   return (
     <section style={{ paddingBlock: "clamp(2rem, 5vw, 3.25rem)" }}>
@@ -105,28 +104,12 @@ export default function BlogPage() {
             <hr className="mt-8 border-0 border-t border-nocturne/[0.1]" />
           </header>
 
-          <PinnedPostsSection compact />
-
           {total > 0 ? (
-            <>
-              <h2
-                id="all-posts-heading"
-                className={cn(
-                  "text-label text-nocturne/45",
-                  hasPinned ? "mt-8" : "mt-6"
-                )}
-              >
-                All posts
-              </h2>
-              <ul
-                className="mt-3 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25"
-                aria-labelledby="all-posts-heading"
-              >
-                {posts.map((post) => (
-                  <BlogRow key={post.slug} post={post} />
-                ))}
-              </ul>
-            </>
+            <ul className="mt-6 space-y-[0.35rem]" aria-label="Blog posts">
+              {posts.map((post) => (
+                <BlogRow key={post.slug} post={post} />
+              ))}
+            </ul>
           ) : (
             <p className="mt-8 font-sans text-nocturne/55">
               No posts yet — check back soon.

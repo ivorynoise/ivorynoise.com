@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(agent-browser)",
+      "Bash(agent-browser skills *)",
+      "Bash(agent-browser open *)",
+      "Bash(agent-browser screenshot *)",
+      "Bash(agent-browser close *)",
+      "Bash(agent-browser scroll *)",
+      "Bash(agent-browser eval ' *)",
+      "Bash(gh auth *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

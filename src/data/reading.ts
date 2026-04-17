@@ -23,15 +23,15 @@ export const readingItems: ReadingItem[] = [
     title: "Startup Technical Guide: AI Agents",
     url: "https://drive.google.com/open?id=11XqTVQnw9yBRcUc77ADK54khAxwOxKTU&usp=drive_fs",
     category: "technical",
-    author: "Google",
-    source: "Google Drive",
+    // author: "Google",
+    // source: "Google Drive",
   },
   {
     title: "Trustless Cross-chain Bridges Made Practical",
     url: "https://drive.google.com/open?id=16oXJZ9x0nbfpR5iUlzixO9le5-cPa4YD&usp=drive_fs",
-    category: "non-technical",
-    author: "Research authors",
-    source: "Google Drive",
+    category: "technical",
+    // author: "Research authors",
+    // source: "Google Drive",
   },
 ];
 

@@ -11,14 +11,17 @@ function escapeXml(s: string): string {
     .replace(/'/g, "&apos;");
 }
 
-function absoluteItemLink(base: string, post: ReturnType<typeof getAllPosts>[number]): string {
+function absoluteItemLink(
+  base: string,
+  post: ReturnType<typeof getAllPosts>[number]
+): string {
   const h = getPostHref(post);
   if (h.startsWith("http://") || h.startsWith("https://")) return h;
   return `${base}${h.startsWith("/") ? h : `/${h}`}`;
 }
 
-export async function GET(request: Request) {
-  const base = new URL(request.url).origin;
+export async function GET(_request: Request) {
+  const base = site.url;
   const posts = getAllPosts();
 
   const channelTitle = `${site.name} — Writing`;
@@ -30,7 +33,9 @@ export async function GET(request: Request) {
     .map((post) => {
       const link = absoluteItemLink(base, post);
       const pub = new Date(post.publishedAt).toUTCString();
-      const guid = post.externalUrl?.trim() ? link : `${base}/blog/${post.slug}`;
+      const guid = post.externalUrl?.trim()
+        ? link
+        : `${base}/blog/${post.slug}`;
       return `
     <item>
       <title>${escapeXml(post.title)}</title>

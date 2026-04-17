@@ -57,16 +57,15 @@ export default function HomePage() {
               building.
             </p>
 
-            <div className="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty">
+            <div className="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty text-[1rem]">
               <p>
                 I am a full stack software engineer and engineering leader
                 passionate about Agentic AI, system architecture, and scalable
-                apps. Currently, I am a Senior Software Engineer at{" "}
+                apps. In 2024, I took a leap of faith and co-founded{" "}
                 <strong className="font-semibold text-nocturne">
-                  Reinforcelabs.ai
+                  Browmath Capital
                 </strong>
-                , working at the intersection of security and AI. Previously, I
-                was head of engineering at{" "}
+                . Previously, I was head of engineering at{" "}
                 <strong className="font-semibold text-nocturne">
                   Authlayer
                 </strong>
@@ -85,25 +84,21 @@ export default function HomePage() {
                 , London, on the Portal Release Infrastructure Team.
               </p>
               <p>
-                My areas of interest include agentic AI and distributed systems.
-              </p>
-              <p>
-                In 2024, I took a leap of faith and co-founded{" "}
-                <strong className="font-semibold text-nocturne">
-                  Browmath Capital
-                </strong>
-                . I was part of the{" "}
+                I was part of the{" "}
                 <strong className="font-semibold text-nocturne">
                   Meta Platform Engineering
                 </strong>{" "}
                 team, where I worked on platform reliability, distributed
                 infrastructure, and release systems at scale.
               </p>
+              <p>
+                My areas of interest include agentic AI and distributed systems.
+              </p>
             </div>
 
             <div className="mt-7 border-t border-nocturne/[0.09] pt-6">
               <p className="text-label mb-3 text-nocturne/40">At a glance</p>
-              <ul className="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty marker:text-nocturne/28">
+              <ul className="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty text-[1rem] marker:text-nocturne/28">
                 {highlights.map((line, i) => (
                   <li key={i}>{line}</li>
                 ))}

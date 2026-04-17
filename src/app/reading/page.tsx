@@ -25,11 +25,9 @@ function formatListDate(dateStr: string) {
 }
 
 function ReadingRow({ item }: { item: ReadingItem }) {
-  const meta = [item.author, item.source].filter(Boolean).join(" · ");
-
   return (
     <li className="font-sans text-pretty text-nocturne">
-      {item.date ? (
+      {item.date && (
         <>
           <time
             className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
@@ -37,13 +35,6 @@ function ReadingRow({ item }: { item: ReadingItem }) {
           >
             {formatListDate(item.date)}
           </time>
-          <span className="text-nocturne/30">{` : `}</span>
-        </>
-      ) : (
-        <>
-          <span className="font-mono text-[0.8125rem] tabular-nums text-nocturne/38">
-            —
-          </span>
           <span className="text-nocturne/30">{` : `}</span>
         </>
       )}
@@ -55,7 +46,6 @@ function ReadingRow({ item }: { item: ReadingItem }) {
       >
         {item.title}
       </a>
-      {meta ? <span className="text-nocturne/45">{` · ${meta}`}</span> : null}
     </li>
   );
 }
@@ -118,14 +108,8 @@ export default function ReadingPage() {
             </h1>
 
             <p className="mt-5 font-sans text-pretty">
-              Papers, guides, and posts worth your time. Optional date, author,
-              or source live in{" "}
-              <code className="rounded bg-sand/70 px-1 py-px font-mono text-[0.8em] text-nocturne/70">
-                reading.ts
-              </code>
-              .
+              Papers, guides, and posts I have read.
             </p>
-
             <hr className="mt-8 border-0 border-t border-nocturne/[0.1]" />
           </header>
 
