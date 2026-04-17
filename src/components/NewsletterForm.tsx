@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [message, setMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -41,23 +43,20 @@ export function NewsletterForm() {
   }
 
   return (
-    <form
-      className="flex flex-col gap-3 sm:flex-row"
-      onSubmit={handleSubmit}
-    >
+    <form className="flex flex-col gap-3 sm:flex-row" onSubmit={handleSubmit}>
       <Input
         type="email"
         required
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
-        className="flex-1 border-white/12 bg-white/8 text-cream placeholder:text-cream/30 md:h-10"
+        className="flex-1 border-nocturne/30 bg-white text-nocturne placeholder:text-nocturne/40 md:h-10"
         style={{ fontSize: "var(--text-sm)" }}
         disabled={status === "loading"}
       />
       <Button
         type="submit"
-        className="bg-cream font-semibold text-nocturne hover:bg-cream/90 md:h-10"
+        className="bg-nocturne font-semibold text-cream hover:bg-nocturne/85 md:h-10"
         style={{ fontSize: "var(--text-sm)" }}
         disabled={status === "loading"}
       >

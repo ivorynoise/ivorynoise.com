@@ -36,7 +36,7 @@ export function Header() {
         <div className="flex min-w-0 shrink-0 items-center gap-2">
           <Link
             href="/"
-            className="truncate text-nocturne leading-none"
+            className="text-nocturne leading-none"
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: "1.15rem",
@@ -63,7 +63,7 @@ export function Header() {
                   "shrink-0 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-sm transition-colors sm:px-3",
                   active
                     ? "text-nocturne font-semibold underline underline-offset-4 decoration-nocturne/40"
-                    : "text-nocturne/65 hover:text-nocturne",
+                    : "text-nocturne/65 hover:text-nocturne"
                 )}
               >
                 {label}

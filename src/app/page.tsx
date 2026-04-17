@@ -1,7 +1,6 @@
 import Image from "next/image";
 // import Link from "next/link";
 
-import { SocialLinks } from "@/components/SocialLinks";
 // import { getPostHref, isExternalPost } from "@/lib/post-links";
 // import { getAllPosts } from "@/lib/posts";
 // import { readingItems } from "@/data/reading";
@@ -100,30 +99,6 @@ export default function HomePage() {
                 team, where I worked on platform reliability, distributed
                 infrastructure, and release systems at scale.
               </p>
-              <p>
-                I keep diving deep into engineering details and share my
-                learnings across my{" "}
-                <a
-                  href="https://x.com/_deepakaggarwal"
-                  className={inlineLinkClass}
-                  rel="noopener noreferrer"
-                >
-                  socials
-                </a>{" "}
-                and videos on{" "}
-                <a
-                  href="https://www.youtube.com/@DeepakAggarwal77"
-                  className={inlineLinkClass}
-                  rel="noopener noreferrer"
-                >
-                  YouTube
-                </a>
-                .
-              </p>
-            </div>
-
-            <div className="mt-6" id="social">
-              <SocialLinks variant="ghost" subset="hero" dense />
             </div>
 
             <div className="mt-7 border-t border-nocturne/[0.09] pt-6">

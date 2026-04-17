@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 import { BlogPostMarkdown } from "@/components/blog/BlogPostMarkdown";
 import { BlogPostToc } from "@/components/blog/BlogPostToc";
@@ -73,6 +74,29 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Content */}
           <BlogPostMarkdown content={post.content} />
+
+          {/* Newsletter signup */}
+          <div className="mt-16 border-t border-nocturne/[0.1] pt-10">
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "var(--text-title)",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+                color: "#1a1a1a",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Enjoyed this post?
+            </h2>
+            <p
+              className="mb-6 text-nocturne/55"
+              style={{ fontSize: "var(--text-sm)" }}
+            >
+              Subscribe for more posts on engineering, systems, and building.
+            </p>
+            <NewsletterForm />
+          </div>
 
           {/* Tags — at the bottom, plain and unobtrusive */}
           {post.tags && post.tags.length > 0 && (

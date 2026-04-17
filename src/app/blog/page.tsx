@@ -95,17 +95,10 @@ export default function BlogPage() {
               </a>
             </div>
 
-            <div className="mt-5 max-w-none space-y-3 font-sans">
+            <div className="mt-5 max-w-none font-sans">
               <p className="text-pretty">
                 Notes on engineering, systems, and building — technical,
                 non-technical, and financial writing.
-              </p>
-              <p className="text-pretty">
-                Follow via{" "}
-                <a href="/rss.xml" className={inlineLinkClass}>
-                  RSS
-                </a>
-                .
               </p>
             </div>
 

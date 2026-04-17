@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  BookOpen,
-  Github,
-  Instagram,
-  Layers,
-  Linkedin,
-  MessageCircle,
-  X,
-  Youtube,
-} from "lucide-react";
+import { BookOpen, Github, Layers, Linkedin, X } from "lucide-react";
 import type { ComponentType } from "react";
 import posthog from "posthog-js";
 
@@ -19,13 +10,7 @@ type SocialLink = {
   icon: ComponentType<{ className?: string }>;
 };
 
-/** Order matches footer spec. Replace Reddit URL if your profile differs. */
 const links: SocialLink[] = [
-  {
-    href: "https://www.youtube.com/@DeepakAggarwal77",
-    label: "YouTube",
-    icon: Youtube,
-  },
   {
     href: "https://x.com/_deepakaggarwal",
     label: "X",
@@ -42,11 +27,6 @@ const links: SocialLink[] = [
     icon: Github,
   },
   {
-    href: "https://www.instagram.com/aggarwal__deepak",
-    label: "Instagram",
-    icon: Instagram,
-  },
-  {
     href: "https://medium.com/@aggarwaldeepak",
     label: "Medium",
     icon: BookOpen,
@@ -56,23 +36,21 @@ const links: SocialLink[] = [
     label: "Substack",
     icon: Layers,
   },
-  {
-    href: "https://www.reddit.com/user/ivorynoise",
-    label: "Reddit",
-    icon: MessageCircle,
-  },
 ];
 
 type SocialSubset = "full" | "hero";
 
-/** Homepage hero: four platforms only; X / Medium / Substack / Reddit stay in the footer. */
-const HERO_SUBSET_LABELS = ["YouTube", "LinkedIn", "GitHub", "Instagram"] as const;
+/** Homepage hero subset. */
+const HERO_SUBSET_LABELS = ["X", "LinkedIn", "GitHub", "Medium"] as const;
 
-function resolveLinkList(subset: SocialSubset | undefined, limit?: number): SocialLink[] {
+function resolveLinkList(
+  subset: SocialSubset | undefined,
+  limit?: number
+): SocialLink[] {
   if (subset === "hero") {
-    return HERO_SUBSET_LABELS.map((label) => links.find((l) => l.label === label)).filter(
-      (x): x is SocialLink => x != null
-    );
+    return HERO_SUBSET_LABELS.map((label) =>
+      links.find((l) => l.label === label)
+    ).filter((x): x is SocialLink => x != null);
   }
   if (typeof limit === "number") return links.slice(0, limit);
   return links;
@@ -83,12 +61,14 @@ type Props = {
   onDark?: boolean;
   /** Outlined “ghost” pills (e.g. homepage hero). */
   variant?: "default" | "ghost";
-  /** Full list (default) or homepage subset (YouTube, LinkedIn, GitHub, Instagram). */
+  /** Full list (default) or homepage subset. */
   subset?: SocialSubset;
-  /** If set, only the first N links of the full list are rendered. Ignored when `subset="hero"`. */
+  /** If set, only the first N links of the full list are rendered. Ignored when `subset=”hero”`. */
   limit?: number;
   /** Tighter padding, smaller type and icons (dense home hero). */
   dense?: boolean;
+  /** Icons only — no labels, no pill borders (e.g. footer). */
+  iconsOnly?: boolean;
   className?: string;
 };
 
@@ -99,6 +79,7 @@ export function SocialLinks({
   subset = "full",
   limit,
   dense = false,
+  iconsOnly = false,
   className = "",
 }: Props) {
   const list = resolveLinkList(subset, limit);
@@ -118,6 +99,10 @@ export function SocialLinks({
     "border-nocturne/[0.14] bg-transparent text-nocturne hover:bg-sand/45 hover:border-nocturne/25",
   ].join(" ");
 
+  const iconOnlyClass = onDark
+    ? "text-cream/50 transition-colors hover:text-cream"
+    : "text-nocturne/50 transition-colors hover:text-nocturne";
+
   const pill = variant === "ghost" ? pillGhost : pillDefault;
   const iconSize = dense ? "h-3.5 w-3.5" : "h-4 w-4";
 
@@ -132,13 +117,17 @@ export function SocialLinks({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={pill}
+          aria-label={label}
+          className={iconsOnly ? iconOnlyClass : pill}
           onClick={() =>
             posthog.capture("social_link_clicked", { platform: label, href })
           }
         >
-          <Icon className={`${iconSize} shrink-0`} aria-hidden />
-          <span>{label}</span>
+          <Icon
+            className={iconsOnly ? "h-5 w-5 shrink-0" : `${iconSize} shrink-0`}
+            aria-hidden
+          />
+          {!iconsOnly && <span>{label}</span>}
         </a>
       ))}
     </div>
