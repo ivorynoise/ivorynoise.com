@@ -1,17 +1,17 @@
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 
 import { SocialLinks } from "@/components/SocialLinks";
-import { getPostHref, isExternalPost } from "@/lib/post-links";
-import { getAllPosts } from "@/lib/posts";
-import { readingItems } from "@/data/reading";
+// import { getPostHref, isExternalPost } from "@/lib/post-links";
+// import { getAllPosts } from "@/lib/posts";
+// import { readingItems } from "@/data/reading";
 import { inlineLinkClass } from "@/lib/inline-link";
 import { site } from "@/lib/site";
 
 import deepakPhoto from "../../public/images/deepak.jpg";
 
-const RECENT_POSTS = 5;
-const RECENT_READING = 5;
+// const RECENT_POSTS = 5;
+// const RECENT_READING = 5;
 
 const highlights = [
   "Backend and distributed systems engineer with 9+ years of experience, now focused on building the infrastructure layer that makes AI systems production-ready at scale.",
@@ -21,17 +21,17 @@ const highlights = [
   "Experience across Meta, Y-Combinator startups, and self-founded ventures across the US, UK, and India.",
 ] as const;
 
-function formatListDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+// function formatListDate(dateStr: string) {
+//   return new Date(dateStr).toLocaleDateString("en-US", {
+//     month: "short",
+//     day: "numeric",
+//     year: "numeric",
+//   });
+// }
 
 export default function HomePage() {
-  const posts = getAllPosts().slice(0, RECENT_POSTS);
-  const reading = readingItems.slice(0, RECENT_READING);
+  // const posts = getAllPosts().slice(0, RECENT_POSTS);
+  // const reading = readingItems.slice(0, RECENT_READING);
 
   return (
     <>
@@ -54,44 +54,60 @@ export default function HomePage() {
                 fontSize: "clamp(0.8rem, 1.15vw, 0.92rem)",
               }}
             >
-              Agentic AI, system architecture, and scalable apps — always building.
+              Agentic AI, system architecture, and scalable apps — always
+              building.
             </p>
 
-            <div
-              className="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty text-nocturne/70"
-              style={{ fontSize: "0.875rem", lineHeight: 1.58 }}
-            >
+            <div className="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty">
               <p>
-                I am a full stack software engineer and engineering leader passionate about Agentic AI, system
-                architecture, and scalable apps. Currently, I am a Senior Software Engineer at{" "}
-                <strong className="font-semibold text-nocturne">Reinforcelabs.ai</strong>, working at the intersection
-                of security and AI. Previously, I was head of engineering at{" "}
-                <strong className="font-semibold text-nocturne">Authlayer</strong>, where I worked on building{" "}
-                <a href="https://www.finlens.app/" className={inlineLinkClass} rel="noopener noreferrer">
+                I am a full stack software engineer and engineering leader
+                passionate about Agentic AI, system architecture, and scalable
+                apps. Currently, I am a Senior Software Engineer at{" "}
+                <strong className="font-semibold text-nocturne">
+                  Reinforcelabs.ai
+                </strong>
+                , working at the intersection of security and AI. Previously, I
+                was head of engineering at{" "}
+                <strong className="font-semibold text-nocturne">
+                  Authlayer
+                </strong>
+                , where I worked on building{" "}
+                <a
+                  href="https://www.finlens.app/"
+                  className={inlineLinkClass}
+                  rel="noopener noreferrer"
+                >
                   Finlens
                 </a>{" "}
-                and ZeFi. I previously worked with <strong className="font-semibold text-nocturne">Facebook</strong>,
-                London, on the Portal Release Infrastructure Team.
+                and ZeFi. I previously worked with{" "}
+                <strong className="font-semibold text-nocturne">
+                  Facebook
+                </strong>
+                , London, on the Portal Release Infrastructure Team.
               </p>
-              <p>My areas of interest include agentic AI and distributed systems.</p>
+              <p>
+                My areas of interest include agentic AI and distributed systems.
+              </p>
               <p>
                 In 2024, I took a leap of faith and co-founded{" "}
-                <strong className="font-semibold text-nocturne">Browmath Capital</strong>. I was part of the{" "}
-                <strong className="font-semibold text-nocturne">Meta Platform Engineering</strong> team, where I worked
-                on platform reliability, distributed infrastructure, and release systems at scale.
+                <strong className="font-semibold text-nocturne">
+                  Browmath Capital
+                </strong>
+                . I was part of the{" "}
+                <strong className="font-semibold text-nocturne">
+                  Meta Platform Engineering
+                </strong>{" "}
+                team, where I worked on platform reliability, distributed
+                infrastructure, and release systems at scale.
               </p>
               <p>
-                I held engineering leadership positions (both IC and management) at{" "}
-                <a href="https://unacademy.com/" className={inlineLinkClass} rel="noopener noreferrer">
-                  Unacademy
-                </a>
-                , where I built, grew, and led Search, Site Reliability Engineering (SRE), and Data Engineering teams. I
-                hold more than 12 years of experience scaling backend services and taking products and teams from 0 to 1
-                — and beyond.
-              </p>
-              <p>
-                I keep diving deep into engineering details and share my learnings across my{" "}
-                <a href="https://x.com/_deepakaggarwal" className={inlineLinkClass} rel="noopener noreferrer">
+                I keep diving deep into engineering details and share my
+                learnings across my{" "}
+                <a
+                  href="https://x.com/_deepakaggarwal"
+                  className={inlineLinkClass}
+                  rel="noopener noreferrer"
+                >
                   socials
                 </a>{" "}
                 and videos on{" "}
@@ -112,14 +128,9 @@ export default function HomePage() {
 
             <div className="mt-7 border-t border-nocturne/[0.09] pt-6">
               <p className="text-label mb-3 text-nocturne/40">At a glance</p>
-              <ul
-                className="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty marker:text-nocturne/28"
-                style={{ fontSize: "0.8125rem", lineHeight: 1.5 }}
-              >
+              <ul className="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty marker:text-nocturne/28">
                 {highlights.map((line, i) => (
-                  <li key={i} className="text-nocturne/68">
-                    {line}
-                  </li>
+                  <li key={i}>{line}</li>
                 ))}
               </ul>
             </div>
@@ -149,6 +160,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Recent blog posts + reading section — temporarily hidden
       <section
         className="border-t border-nocturne/[0.08]"
         style={{
@@ -170,7 +182,7 @@ export default function HomePage() {
                 Full archive →
               </Link>
             </h2>
-            <p className="mt-1.5 font-sans text-nocturne/52" style={{ fontSize: "0.8125rem" }}>
+            <p className="mt-1.5 font-sans text-nocturne/52 text-sm">
               Things I have written recently.
             </p>
             <ul className="mt-4 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25">
@@ -179,10 +191,7 @@ export default function HomePage() {
                 const ext = isExternalPost(post);
                 const date = formatListDate(post.publishedAt);
                 return (
-                  <li
-                    key={post.slug}
-                    className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne"
-                  >
+                  <li key={post.slug} className="font-sans text-pretty text-nocturne">
                     <time
                       className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
                       dateTime={post.publishedAt}
@@ -218,17 +227,14 @@ export default function HomePage() {
                 Reading list →
               </Link>
             </h2>
-            <p className="mt-1.5 font-sans text-nocturne/52" style={{ fontSize: "0.8125rem" }}>
+            <p className="mt-1.5 font-sans text-nocturne/52 text-sm">
               Papers and posts I am reading or recommend.
             </p>
             <ul className="mt-4 list-disc space-y-[0.35rem] pl-4 marker:text-nocturne/25">
               {reading.map((item) => {
                 const meta = [item.author, item.source].filter(Boolean).join(" · ");
                 return (
-                  <li
-                    key={item.url}
-                    className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne"
-                  >
+                  <li key={item.url} className="font-sans text-pretty text-nocturne">
                     {item.date ? (
                       <>
                         <time
@@ -256,6 +262,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      */}
     </>
   );
 }

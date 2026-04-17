@@ -24,7 +24,7 @@ function PinnedRow({ post }: { post: PostMeta }) {
   const external = isExternalPost(post);
 
   return (
-    <li className="font-sans text-pretty text-[0.875rem] leading-snug text-nocturne">
+    <li className="font-sans text-pretty text-nocturne">
       <time
         className="font-mono text-[0.8125rem] tabular-nums text-nocturne/48"
         dateTime={post.publishedAt}
@@ -33,7 +33,12 @@ function PinnedRow({ post }: { post: PostMeta }) {
       </time>
       <span className="text-nocturne/30">{` : `}</span>
       {external ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className={inlineLinkClass}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={inlineLinkClass}
+        >
           {post.title}
         </a>
       ) : (
@@ -55,7 +60,10 @@ export function PinnedPostsSection({ compact }: Props) {
       aria-labelledby="pinned-posts-heading"
     >
       <div className="w-full" style={{ maxWidth: "var(--max-w)" }}>
-        <p id="pinned-posts-heading" className="text-label mb-3 text-nocturne/45">
+        <p
+          id="pinned-posts-heading"
+          className="text-label mb-3 text-nocturne/45"
+        >
           Pinned
         </p>
         <ul className="list-disc space-y-1.5 pl-4 marker:text-nocturne/22">

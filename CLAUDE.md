@@ -20,10 +20,10 @@ Ivory Noise is a personal portfolio and blog site built with Next.js 16 (App Rou
 ## Commands
 
 ```bash
-infisical secrets --env=prod npm run dev       # Local dev server on port 3000
-infisical secrets --env=prod npm run build     # Production build
-infisical secrets --env=prod npm run start     # Start production server
-infisical secrets --env=prod npm run lint      # ESLint (next/core-web-vitals + typescript)
+infisical run --env=prod -- npm run dev       # Local dev server on port 3000
+infisical run --env=prod -- npm run build     # Production build
+infisical run --env=prod -- npm run start     # Start production server
+infisical run --env=prod -- npm run lint      # ESLint (next/core-web-vitals + typescript)
 ```
 
 No test framework is configured.
