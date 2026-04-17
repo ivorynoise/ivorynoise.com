@@ -50,7 +50,7 @@ export function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
-        className="flex-1 border-nocturne/30 bg-white text-nocturne placeholder:text-nocturne/40 md:h-10"
+        className="flex-1 border-border bg-background text-foreground placeholder:text-muted-foreground md:h-10"
         style={{ fontSize: "var(--text-sm)" }}
         disabled={status === "loading"}
       />
