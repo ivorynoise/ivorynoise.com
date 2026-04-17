@@ -77,18 +77,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Newsletter signup */}
           <div className="mt-16 border-t border-nocturne/[0.1] pt-10">
-            <h2
-              style={{
-                fontFamily: "var(--font-serif)",
-                fontSize: "var(--text-title)",
-                fontWeight: 600,
-                letterSpacing: "-0.025em",
-                color: "#1a1a1a",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Enjoyed this post?
-            </h2>
+            <h2 className="blog-post-cta-title">Enjoyed this post?</h2>
             <p
               className="mb-6 text-nocturne/55"
               style={{ fontSize: "var(--text-sm)" }}
