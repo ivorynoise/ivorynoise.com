@@ -2,6 +2,8 @@ import { getAllPosts } from "@/lib/posts";
 import { getPostHref } from "@/lib/post-links";
 import { site } from "@/lib/site";
 
+export const dynamic = "force-static";
+
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -20,7 +22,7 @@ function absoluteItemLink(
   return `${base}${h.startsWith("/") ? h : `/${h}`}`;
 }
 
-export async function GET(_request: Request) {
+export async function GET() {
   const base = site.url;
   const posts = getAllPosts();
 
@@ -63,7 +65,6 @@ export async function GET(_request: Request) {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/rss+xml; charset=utf-8",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

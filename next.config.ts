@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  output: "standalone",
-  skipTrailingSlashRedirect: true,
+  // Static HTML export to `out/`, hosted as plain files on Cloudflare.
+  output: "export",
+  images: { unoptimized: true },
 };
 
 export default nextConfig;
-
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

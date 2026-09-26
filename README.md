@@ -6,7 +6,6 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
 
 - **About & Bio:** Custom landing page with profile, philosophy, and core expertise.
 - **Blog System:** File-based Markdown blog (`content/blogs/*.md`) with featured posts, archive, and custom table support.
-- **Newsletter:** Brevo (Sendinblue) contact sync via API (`/api/newsletter`).
 - **Minimal, Editorial UI:** Custom color palette, Playfair Display & Source Sans 3 fonts, and subtle animations.
 - **No CMS:** All content is local, no Sanity or external CMS dependencies.
 - **Fully Responsive:** Mobile-first, accessible, and fast.
@@ -19,7 +18,6 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
 - [gray-matter](https://github.com/jonschlinkert/gray-matter) (Markdown parsing)
 - [react-markdown](https://github.com/remarkjs/react-markdown) + [remark-gfm](https://github.com/remarkjs/remark-gfm)
 - [lucide-react](https://lucide.dev/) (icons)
-- [Brevo API](https://developers.brevo.com/) (newsletter / contacts)
 
 ## Getting Started
 
@@ -28,14 +26,7 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
    npm install
    ```
 
-2. **Set up environment variables:**
-   Create a `.env.local` file in the root:
-   ```
-   BREVO_API_KEY=your-brevo-api-key
-   BREVO_LIST_ID=your-list-id
-   ```
-
-3. **Run the development server:**
+2. **Run the development server:**
    ```bash
    npm run dev
    ```
