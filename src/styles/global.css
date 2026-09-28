@@ -48,8 +48,8 @@
   --color-input: oklch(0.35 0.02 90 / 0.22);
   --color-ring: var(--color-slate);
 
-  /* ── Font families (override Tailwind defaults, pull from next/font vars) ── */
-  --font-serif: var(--font-title), "Literata", Georgia, serif;
+  /* ── Font families (override Tailwind defaults; Literata via @fontsource-variable) ── */
+  --font-serif: "Literata Variable", "Literata", Georgia, serif;
   --font-sans:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }

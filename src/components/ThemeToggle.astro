@@ -1,0 +1,40 @@
+---
+import Icon from "@/components/Icon.astro";
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] transition-colors text-nocturne hover:border-nocturne/35 hover:bg-sand/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nocturne/25 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+  aria-label="Switch to dark theme"
+  title="Dark mode"
+>
+  <Icon name="moon" class="h-4 w-4 dark:hidden" />
+  <Icon name="sun" class="hidden h-4 w-4 dark:block" />
+</button>
+
+<script>
+  const STORAGE_KEY = "ivorynoise-theme";
+  const button = document.getElementById("theme-toggle")!;
+  const root = document.documentElement;
+
+  const sync = () => {
+    const dark = root.classList.contains("dark");
+    button.setAttribute(
+      "aria-label",
+      dark ? "Switch to light theme" : "Switch to dark theme"
+    );
+    button.title = dark ? "Light mode" : "Dark mode";
+  };
+
+  sync();
+  button.addEventListener("click", () => {
+    const isDark = root.classList.toggle("dark");
+    try {
+      localStorage.setItem(STORAGE_KEY, isDark ? "dark" : "light");
+    } catch {
+      /* ignore */
+    }
+    sync();
+  });
+</script>

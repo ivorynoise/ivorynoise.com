@@ -1,6 +1,6 @@
 # Ivory Noise
 
-A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder & CTO, Synthlane Technologies). Built with Next.js 16 App Router, TypeScript, and Tailwind CSS.
+A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder & CTO, Synthlane Technologies). Built with Astro, TypeScript, and Tailwind CSS.
 
 ## Features
 
@@ -12,12 +12,11 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
 
 ## Tech Stack
 
-- [Next.js 16 (App Router)](https://nextjs.org/)
+- [Astro](https://astro.build/) (static output, content collections)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS v4](https://tailwindcss.com/)
-- [gray-matter](https://github.com/jonschlinkert/gray-matter) (Markdown parsing)
-- [react-markdown](https://github.com/remarkjs/react-markdown) + [remark-gfm](https://github.com/remarkjs/remark-gfm)
-- [lucide-react](https://lucide.dev/) (icons)
+- [rehype-highlight](https://github.com/rehypejs/rehype-highlight) (code highlighting)
+- [Lucide](https://lucide.dev/) icons, inlined as SVG
 
 ## Getting Started
 
@@ -30,7 +29,7 @@ A modern, minimalist portfolio and writing site for Deepak Aggarwal (Cofounder &
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) to view the site.
+   Open [http://localhost:4321](http://localhost:4321) to view the site.
 
 ## Content & Customization
 

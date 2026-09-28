@@ -1,0 +1,71 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  items: MarkdownHeading[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <div class="mb-10 rounded-[var(--radius-md)] border border-nocturne/10 bg-sand/30 px-4 py-3 dark:bg-sand/25 lg:hidden">
+      <p class="text-label text-nocturne/50">On this page</p>
+      <div class="mt-3 max-h-[min(50vh,24rem)] overflow-y-auto [scrollbar-width:thin]">
+        <ul class="space-y-0.5">
+          {items.map((item) => (
+            <li>
+              <a
+                href={`#${item.slug}`}
+                data-toc-link
+                class:list={[
+                  "block border-l-2 -ml-px py-1.5 leading-snug transition-colors border-transparent text-nocturne/50 hover:text-nocturne/75",
+                  item.depth === 3
+                    ? "pl-5 text-[0.78rem]"
+                    : "pl-3 text-[0.8125rem]",
+                ]}
+              >
+                {item.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const ACTIVE = ["border-[#c17f59]", "font-medium", "text-nocturne"];
+  const INACTIVE = [
+    "border-transparent",
+    "text-nocturne/50",
+    "hover:text-nocturne/75",
+  ];
+  const links = [
+    ...document.querySelectorAll<HTMLAnchorElement>("a[data-toc-link]"),
+  ];
+
+  // Highlight the last heading scrolled past (120px below the top).
+  const onScroll = () => {
+    const probe = window.scrollY + 120;
+    let current = links[0];
+    for (const a of links) {
+      const el = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+      if (el && el.getBoundingClientRect().top + window.scrollY <= probe) {
+        current = a;
+      }
+    }
+    for (const a of links) {
+      const on = a === current;
+      a.classList.remove(...(on ? INACTIVE : ACTIVE));
+      a.classList.add(...(on ? ACTIVE : INACTIVE));
+    }
+  };
+
+  if (links.length > 0) {
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+</script>

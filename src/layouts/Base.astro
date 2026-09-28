@@ -1,0 +1,67 @@
+---
+import "@fontsource-variable/literata/wght.css";
+import "@fontsource-variable/literata/wght-italic.css";
+import "@/styles/global.css";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import { site } from "@/lib/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.name, description = "Personal portfolio and blog." } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (function(){try{var k='ivorynoise-theme',s=localStorage.getItem(k);if(s==='dark'){document.documentElement.classList.add('dark');return;}document.documentElement.classList.remove('dark');}catch(e){}})();
+    </script>
+  </head>
+  <body class="min-h-full flex flex-col">
+    <Header />
+    <main class="flex-1"><slot /></main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  import posthog from "posthog-js";
+
+  // Only track the live site, so localhost and preview deploys never reach PostHog.
+  const PRODUCTION_HOSTS = [
+    "deepakaggarwal.me",
+    "www.deepakaggarwal.me",
+    "ivorynoise.com",
+    "www.ivorynoise.com",
+  ];
+
+  if (PRODUCTION_HOSTS.includes(window.location.hostname)) {
+    posthog.init("phc_kp66RPY7BFZ4BZvLMkg69q34LGG3NpKvzXggcQ6vNkwP", {
+      api_host: "https://us.i.posthog.com",
+      defaults: "2026-05-30",
+      person_profiles: "identified_only",
+    });
+
+    document.addEventListener("click", (e) => {
+      const link = (e.target as Element).closest<HTMLAnchorElement>(
+        "a[data-social]"
+      );
+      if (link) {
+        posthog.capture("social_link_clicked", {
+          platform: link.dataset.social,
+          href: link.href,
+        });
+      }
+    });
+  }
+</script>

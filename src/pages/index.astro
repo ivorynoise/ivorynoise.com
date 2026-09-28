@@ -1,0 +1,94 @@
+---
+import Base from "@/layouts/Base.astro";
+import { inlineLinkClass } from "@/lib/inline-link";
+import { site } from "@/lib/site";
+
+const highlights = [
+  "Backend and distributed systems engineer with 9+ years of experience, now focused on building the infrastructure layer that makes AI systems production-ready at scale.",
+  "Started in high-stakes financial data systems, scaled through Meta's distributed infrastructure processing 100M+ events/day, then founded and led engineering teams building crypto and AI-first products.",
+  "Brings a rare combination of deep backend engineering, founding-level ownership, and hands-on AI infra experience spanning LLM observability, evaluation pipelines, and voice agent orchestration.",
+  "Proven track record leading and mentoring engineers across founding and growth-stage environments, driving architecture decisions from zero to production.",
+  "Experience across Meta, Y-Combinator startups, and self-founded ventures across the US, UK, and India.",
+];
+---
+
+<Base>
+  <section class="py-9 lg:py-12">
+    <div
+      class="site-container grid max-w-[70rem] items-start gap-8 sm:gap-10 lg:grid-cols-[1fr_min(36%,400px)] lg:gap-12 lg:items-stretch"
+    >
+      <div class="min-w-0">
+        <h1
+          class="text-balance font-semibold leading-[1.08] tracking-tight text-nocturne"
+          style="font-family: var(--font-serif); font-size: clamp(1.4rem, 3.2vw, 1.9rem)"
+        >
+          Hey, I am {site.name.split(" ")[0]}
+        </h1>
+        <p
+          class="mt-2 max-w-[40rem] italic leading-snug text-[#b04a37]"
+          style="font-family: var(--font-serif); font-size: clamp(0.8rem, 1.15vw, 0.92rem)"
+        >
+          Agentic AI, system architecture, and scalable apps — always building.
+        </p>
+
+        <div class="font-sans mt-5 max-w-[40rem] space-y-3 text-pretty text-[1rem]">
+          <p>
+            I am a full stack software engineer and engineering leader
+            passionate about Agentic AI, system architecture, and scalable
+            apps. In 2024, I took a leap of faith and co-founded
+            <strong class="font-semibold text-nocturne">Browmath Capital</strong>.
+            Previously, I was head of engineering at
+            <strong class="font-semibold text-nocturne">Authlayer</strong>,
+            where I worked on building
+            <a
+              href="https://www.finlens.app/"
+              class={inlineLinkClass}
+              rel="noopener noreferrer">Finlens</a
+            >
+            and ZeFi. I previously worked with
+            <strong class="font-semibold text-nocturne">Facebook</strong>,
+            London, on the Portal Release Infrastructure Team.
+          </p>
+          <p>
+            I was part of the
+            <strong class="font-semibold text-nocturne"
+              >Meta Platform Engineering</strong
+            >
+            team, where I worked on platform reliability, distributed
+            infrastructure, and release systems at scale.
+          </p>
+          <p>My areas of interest include agentic AI and distributed systems.</p>
+        </div>
+
+        <div class="mt-7 border-t border-nocturne/[0.09] pt-6">
+          <p class="text-label mb-3 text-nocturne/40">At a glance</p>
+          <ul
+            class="max-w-[40rem] list-disc space-y-1.5 pl-4 text-pretty text-[1rem] marker:text-nocturne/28"
+          >
+            {highlights.map((line) => <li>{line}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-center lg:block lg:justify-end">
+        <div
+          class="relative w-full max-w-[300px] sm:max-w-[340px] lg:max-w-none lg:sticky lg:top-[4.75rem] lg:self-start"
+        >
+          <div
+            class="overflow-hidden bg-sand/50 ring-1 ring-nocturne/[0.06]"
+            style="border-radius: var(--radius-lg); box-shadow: var(--shadow-sm)"
+          >
+            <img
+              src="/images/deepak.jpg"
+              alt={site.name}
+              width="420"
+              height="520"
+              fetchpriority="high"
+              class="aspect-[4/5] w-full object-cover object-[center_12%]"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
