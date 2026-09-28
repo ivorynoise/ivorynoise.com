@@ -1,7 +1,0 @@
-node_modules
-.next
-.git
-.gitignore
-# Do not ignore `content/blogs/*.md` — those files are read at build time (getAllPosts / getPostBySlug).
-.env*
-.dockerignore

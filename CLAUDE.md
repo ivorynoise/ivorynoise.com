@@ -8,7 +8,7 @@ Ivory Noise is a personal portfolio and blog site built with Next.js 16 (App Rou
 
 ## Development Setup
 - Node Version: 22 (v22.x)
-- Package Manager: npm (Dockerfile and package-lock.json; pnpm-lock.yaml also present)
+- Package Manager: npm
 - Secret Manager: Pre-authenticated Infisical CLI
 
 ## Environment Variables
@@ -40,12 +40,10 @@ Blog posts are Markdown files in `content/blogs/` with YAML frontmatter (title, 
 ### Analytics (PostHog)
 - Client-side only: `posthog-js` initialized in `instrumentation-client.ts`, sending directly to `us.i.posthog.com`
 - Only initializes on production hostnames (deepakaggarwal.me, ivorynoise.com), so localhost and preview deploys are never tracked
-- `TrackedLink` component wraps links with event capture
-- Key events: `cta_clicked`, `social_link_clicked`, `blog_post_clicked`
+- Key event: `social_link_clicked`
 
 ### Components
-- `src/components/ui/` — Base UI (`@base-ui/react`) primitives (Button, Input, Label), wired via shadcn-style `components.json`
-- `src/components/` — Feature components (Header, Footer, BlogCard, SocialLinks, TrackedLink, FeaturedCarousel, PinnedBlogCarousel, ThemeToggle)
+- `src/components/` — Feature components (Header, Footer, SocialLinks, ThemeToggle, blog/)
 - `src/lib/utils.ts` — `cn()` utility for Tailwind class merging
 - `src/data/` — Static TypeScript data files: `reading.ts` (reading list), `books.ts` (books)
 
@@ -63,7 +61,7 @@ Custom CSS variables define the entire design language:
 
 ## Build & Deploy
 
-Docker multi-stage build (Node 24-alpine) with standalone Next.js output. `build.sh` builds and pushes to `central-harbor.ext.synthlane.com/internal/ivorynoise-com`. CI runs via GitHub Actions (`.github/workflows/ivory-noise-fe.yml`) with manual dispatch, supporting dev/prod environments.
+Static export (`output: "export"`) to `out/`. Cloudflare Workers Builds deploys on push to `main` using `wrangler.jsonc` (build command lives there); other branches get preview versions.
 
 ## Project-Specific Gotchas
 - Never read anything inside .ignore/ directory
