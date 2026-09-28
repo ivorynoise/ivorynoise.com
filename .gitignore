@@ -13,9 +13,9 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# astro
+/dist/
+.astro/
 
 # production
 /build
@@ -38,14 +38,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 .env.local
 
 # 
 .ignore/
 .superpowers/
-# OpenNext
-.open-next
 
 # wrangler files
 .wrangler

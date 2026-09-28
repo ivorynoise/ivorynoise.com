@@ -1,0 +1,45 @@
+---
+import Icon from "@/components/Icon.astro";
+import { site } from "@/lib/site";
+
+const links = [
+  { href: "https://x.com/_deepakaggarwal", label: "X", icon: "x" },
+  { href: "https://www.linkedin.com/in/daggarwal/", label: "LinkedIn", icon: "linkedin" },
+  { href: "https://github.com/ivorynoise", label: "GitHub", icon: "github" },
+  { href: "https://medium.com/@aggarwaldeepak", label: "Medium", icon: "book-open" },
+  { href: "https://substack.com/@ivorynoise", label: "Substack", icon: "layers" },
+] as const;
+
+const year = new Date().getFullYear();
+---
+
+<footer
+  style="background: var(--palette-nocturne); color: var(--palette-cream)"
+>
+  <div
+    class="site-container"
+    style="padding-block: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08)"
+  >
+    <div class="flex items-center justify-between gap-4">
+      <p class="text-cream/50" style="font-size: var(--text-sm)">
+        © {year} {site.name}
+      </p>
+      <div class="flex flex-wrap gap-1.5 sm:gap-2" style="font-size: var(--text-sm)">
+        {
+          links.map(({ href, label, icon }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              data-social={label}
+              class="text-cream/50 transition-colors hover:text-cream"
+            >
+              <Icon name={icon} class="h-5 w-5 shrink-0" />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>

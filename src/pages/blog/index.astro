@@ -1,0 +1,88 @@
+---
+import Icon from "@/components/Icon.astro";
+import Base from "@/layouts/Base.astro";
+import { getAllPosts, getPostHref } from "@/lib/posts";
+
+const posts = await getAllPosts();
+
+const formatListDate = (date: string) =>
+  new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+---
+
+<Base
+  title="Blogs | Deepak Aggarwal"
+  description="Technical, non-technical, and financial writing — internal notes and external links."
+>
+  <section style="padding-block: clamp(2rem, 5vw, 3.25rem)">
+    <div class="site-container w-full">
+      <div class="w-full" style="max-width: 42rem">
+        <header>
+          <div
+            class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-6"
+          >
+            <h1
+              class="text-balance font-semibold leading-[1.1] tracking-tight text-nocturne"
+              style="font-family: var(--font-serif); font-size: clamp(1.45rem, 3.2vw, 1.95rem)"
+            >
+              Blogs<span
+                class="font-sans font-normal tabular-nums text-nocturne/45"
+                style="font-size: clamp(0.9rem, 1.35vw, 1.05rem)"
+                >{` (${posts.length})`}</span
+              >
+            </h1>
+
+            <a
+              href="/rss.xml"
+              class="inline-flex w-fit shrink-0 items-center gap-2 rounded-md border border-transparent px-3 py-1.5 font-mono text-xs font-medium transition-colors bg-[#ffe58f] text-nocturne shadow-[0_1px_0_rgba(44,46,40,0.06)] hover:opacity-95 dark:border-nocturne/18 dark:bg-sand dark:text-nocturne dark:shadow-none dark:hover:bg-sand/90"
+            >
+              Subscribe RSS Feed
+              <Icon name="rss" class="size-3.5 opacity-80" />
+            </a>
+          </div>
+
+          <div class="mt-5 max-w-none font-sans">
+            <p class="text-pretty">
+              Notes on engineering, systems, and building — technical,
+              non-technical, and financial writing.
+            </p>
+          </div>
+
+          <hr class="mt-8 border-0 border-t border-nocturne/[0.1]" />
+        </header>
+
+        {
+          posts.length > 0 ? (
+            <ul class="mt-6 space-y-[0.35rem]" aria-label="Blog posts">
+              {posts.map((post) => (
+                <li class="grid grid-cols-[7.5rem_1fr] gap-x-4 font-sans text-nocturne">
+                  <time
+                    class="font-mono text-[0.8125rem] tabular-nums text-nocturne/48 pt-[0.1em]"
+                    datetime={post.data.date}
+                  >
+                    {formatListDate(post.data.date)}
+                  </time>
+                  <a
+                    href={getPostHref(post)}
+                    target={post.data.externalUrl ? "_blank" : undefined}
+                    rel={post.data.externalUrl ? "noopener noreferrer" : undefined}
+                    class="text-nocturne transition-opacity hover:opacity-70"
+                  >
+                    {post.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-8 font-sans text-nocturne/55">
+              No posts yet — check back soon.
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>

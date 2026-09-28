@@ -1,0 +1,122 @@
+---
+import Icon from "@/components/Icon.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
+import { site } from "@/lib/site";
+
+const navLinks = [
+  { href: "/blog", label: "Blogs" },
+  { href: "/books", label: "Books" },
+  { href: "/reading", label: "Reading" },
+];
+
+const pathname = Astro.url.pathname.replace(/\.html$/, "");
+const isActive = (href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
+
+const linkState = (href: string) =>
+  isActive(href)
+    ? "text-nocturne font-semibold underline underline-offset-4 decoration-nocturne/40"
+    : "text-nocturne/65 hover:text-nocturne";
+---
+
+<header
+  class="sticky top-0 z-50 bg-cream/80 backdrop-blur-md relative"
+  style="border-bottom: var(--border)"
+>
+  <div
+    class="site-container flex h-14 min-h-14 items-center justify-between gap-2 sm:h-16 sm:min-h-16 sm:gap-3"
+  >
+    <div class="min-w-0 flex-1">
+      <a
+        href="/"
+        class="text-nocturne inline-block max-w-full truncate leading-none"
+        style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600"
+      >
+        {site.name}
+      </a>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-0.5 sm:gap-1">
+      <nav class="hidden items-center md:flex" aria-label="Primary">
+        {
+          navLinks.map(({ href, label }) => (
+            <a
+              href={href}
+              class:list={[
+                "shrink-0 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-sm transition-colors sm:px-3",
+                linkState(href),
+              ]}
+            >
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+      <ThemeToggle />
+      <button
+        id="menu-toggle"
+        type="button"
+        class="group flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] transition-colors md:hidden text-nocturne hover:border-nocturne/35 hover:bg-sand/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nocturne/25 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" class="h-5 w-5 group-aria-expanded:hidden" />
+        <Icon name="x" class="hidden h-5 w-5 group-aria-expanded:block" />
+      </button>
+    </div>
+  </div>
+
+  <button
+    id="menu-backdrop"
+    type="button"
+    class="hidden fixed inset-x-0 top-14 z-40 h-[calc(100dvh-3.5rem)] bg-nocturne/25 sm:top-16 sm:h-[calc(100dvh-4rem)] md:hidden"
+    aria-label="Close menu"></button>
+  <nav
+    id="mobile-nav"
+    class="hidden absolute inset-x-0 top-full z-50 border-b bg-cream/95 shadow-md backdrop-blur-md md:hidden"
+    style="border-bottom: var(--border)"
+    aria-label="Primary"
+  >
+    <div class="site-container flex flex-col py-2">
+      {
+        navLinks.map(({ href, label }) => (
+          <a
+            href={href}
+            class:list={[
+              "block w-full rounded-[var(--radius-sm)] px-3 py-3 text-base transition-colors",
+              linkState(href),
+            ]}
+          >
+            {label}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle")!;
+  const panels = ["mobile-nav", "menu-backdrop"].map(
+    (id) => document.getElementById(id)!
+  );
+
+  const setOpen = (open: boolean) => {
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    for (const el of panels) el.classList.toggle("hidden", !open);
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+
+  toggle.addEventListener("click", () =>
+    setOpen(toggle.getAttribute("aria-expanded") !== "true")
+  );
+  panels[1].addEventListener("click", () => setOpen(false));
+  for (const a of panels[0].querySelectorAll("a")) {
+    a.addEventListener("click", () => setOpen(false));
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
+  });
+</script>

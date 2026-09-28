@@ -1,0 +1,63 @@
+---
+import { render } from "astro:content";
+import Toc from "@/components/blog/Toc.astro";
+import Base from "@/layouts/Base.astro";
+import { getAllPosts, type Post, readingTime } from "@/lib/posts";
+import { site } from "@/lib/site";
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+
+// External posts: static build writes a meta-refresh page to the real URL.
+if (post.data.externalUrl) return Astro.redirect(post.data.externalUrl);
+
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const minutes = readingTime(post.body);
+const date = new Date(post.data.date).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Base title={`${post.data.title} | ${site.name}`} description={post.data.description}>
+  <div class="blog-article">
+    <div
+      class="site-container"
+      style="padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(4rem, 8vw, 6rem)"
+    >
+      <div style="max-width: 42rem; margin-inline: auto">
+        <a href="/blog" class="blog-post-back">← All posts</a>
+
+        <header class="blog-post-header">
+          <h1 class="blog-post-title">{post.data.title}</h1>
+          <div class="blog-post-meta">
+            <time datetime={post.data.date}>{date}</time>
+            <span>{minutes} min read</span>
+          </div>
+        </header>
+
+        <Toc items={toc} />
+
+        <div class="prose-content blog-article-prose font-sans">
+          <Content />
+        </div>
+
+        {
+          post.data.tags.length > 0 && (
+            <footer class="blog-post-tags">
+              {post.data.tags.map((tag) => (
+                <span class="blog-post-tag">{tag}</span>
+              ))}
+            </footer>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Base>

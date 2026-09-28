@@ -7,11 +7,7 @@ pre-commit:
       run: npx biome format --write {staged_files}
 
     type-check:
-      run: npx tsc --noEmit
-
-    eslint:
-      glob: "*.{ts,tsx,js,jsx}"
-      run: npx eslint {staged_files}
+      run: npx astro check
 
     secrets-scan:
       glob: "*.{ts,tsx,js,jsx,json,env,yaml,yml}"
