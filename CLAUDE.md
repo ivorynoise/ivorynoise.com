@@ -38,7 +38,7 @@ Blog posts are Markdown files in `content/blogs/`, loaded as the `blog` content 
 - `/books` — Book list (data from `src/data/books.ts`)
 
 ### Analytics (PostHog)
-- Client-side only: `posthog-js` initialized in `src/layouts/Base.astro`, sending directly to `us.i.posthog.com`
+- Client-side only: `posthog-js` initialized in `src/layouts/Base.astro`, sending via the managed reverse proxy on `t.<domain>` (t.deepakaggarwal.me / t.ivorynoise.com)
 - Only initializes on production hostnames (deepakaggarwal.me, ivorynoise.com), so localhost and preview deploys are never tracked
 - Key event: `social_link_clicked` (any link with `data-social`)
 

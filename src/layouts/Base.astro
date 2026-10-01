@@ -47,7 +47,9 @@ const { title = site.name, description = "Personal portfolio and blog." } =
 
   if (PRODUCTION_HOSTS.includes(window.location.hostname)) {
     posthog.init("phc_kp66RPY7BFZ4BZvLMkg69q34LGG3NpKvzXggcQ6vNkwP", {
-      api_host: "https://us.i.posthog.com",
+      // Same-site reverse proxy (t.<domain>) so ad blockers don't drop events.
+      api_host: `https://t.${window.location.hostname.replace(/^www\./, "")}`,
+      ui_host: "https://us.posthog.com",
       defaults: "2026-05-30",
       person_profiles: "identified_only",
     });
