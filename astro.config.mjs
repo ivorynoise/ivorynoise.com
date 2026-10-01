@@ -27,6 +27,8 @@ export default defineConfig({
   // `/blog/foo` → `blog/foo.html`, same URLs as the old Next.js export.
   build: { format: "file" },
   trailingSlash: "never",
+  // On by default; it drops line-break whitespace next to tags, gluing words to <strong>/<a>.
+  compressHTML: false,
   markdown: {
     // highlight.js classes, styled by the `.hljs-*` rules in global.css
     syntaxHighlight: false,
